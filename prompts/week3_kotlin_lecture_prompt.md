@@ -8,7 +8,7 @@ Ignore tasks and quizzes - there will be separate prompts for these.
 
 The lecture content should be broken down into sections, with each section having a title and a brief description of what will be covered in that section - followed by explanation and examples. 
 
-All code examples and code snippets must be in `kotlin` and must represent complete programs that can run - including an entry point (`main()) and  related dependencies. 
+All code examples and code snippets must be in `kotlin` and must represent complete programs that can run - and if necessary include an entry point (`main()) and  related dependencies (import statements etc.). Properly comment the code to explain what each part does.
 
 
 Try and provide snippets of sample output for each program where appropriate.
