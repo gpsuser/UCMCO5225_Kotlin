@@ -1,8 +1,6 @@
-# Week 2: Worksheet
+# Week 3: Worksheet
 
-(Note - use normal model and extended thinking with latest sonnet)
-
-Based on the attached lecture file - please generate a downloadable markdown worksheet that contains two sections - a quiz section and a task section as follows:
+Based on the attached lecture file and tutorial file - please generate a downloadable markdown worksheet that contains three sections - a quiz section, a task section, and a summary table section as follows:
 
 ## Quiz Section
 
@@ -27,7 +25,13 @@ For each task - provide some code scaffolding to help the student get started an
 
 These tasks should take approximately 5-10 minutes each.
 
+## Summary Table
 
+At the end of the worksheet - please provide a summary table that maps lecture topics to relevant tutorial tasks in the tutorial file `cpp_programming_tutorial.pdf`.
+
+* Only show lecture topics for which tasks can be found.
+* Only reference a task once - even if it is relevant to multiple lecture topics.
+* If a lecture topic has multiple relevant tasks - show all of them.
 
 ## Answers
 

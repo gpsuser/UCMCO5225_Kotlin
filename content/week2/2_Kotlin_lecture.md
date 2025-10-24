@@ -775,7 +775,11 @@ Lambda expressions work seamlessly with Kotlin's collection functions like filte
 
 ### Understanding Higher Order Functions
 
-A higher-order function is a function that elevates the concept of functions to a new level by either accepting other functions as parameters, returning functions as results, or both. This concept is central to functional programming and enables powerful abstractions that make your code more reusable and expressive. Because Kotlin treats functions as first-class citizens with their own types, they can be passed around just like any other value such as strings or integers.
+A higher-order function is a function that elevates the concept of functions to a new level by either accepting other functions as parameters, returning functions as results, or both. 
+
+This concept is central to functional programming and enables powerful abstractions that make your code more reusable and expressive. 
+
+Because Kotlin treats functions as first-class citizens with their own types, they can be passed around just like any other value such as strings or integers.
 
 The syntax for calling higher-order functions in Kotlin has a special convenience feature. When the function parameter is the last parameter in the parameter list, you can move the lambda expression outside the parentheses. If the lambda is the only parameter, you can omit the parentheses entirely. This syntactic sugar makes the code read more naturally, almost like adding new control structures to the language.
 
@@ -1126,9 +1130,15 @@ The ability to compose functions by chaining higher-order operations is particul
 
 Now that we have explored how Kotlin treats functions as first-class citizens and enables powerful functional programming patterns, we turn our attention to classes and object-oriented programming. You will see how the functional concepts we just learned integrate beautifully with Kotlin's approach to classes, particularly when we discuss extension functions later.
 
-Kotlin classes are declared using the `class` keyword, and unlike Java, they are public by default. This reduces boilerplate since you do not need to write `public` for every class. One of the key requirements that distinguishes Kotlin from Java is that all properties must be initialized either at declaration, in the constructor, or within an init block. This requirement ensures that objects are always in a valid state when created, eliminating a whole class of potential bugs.
+Kotlin classes are declared using the `class` keyword, and unlike Java, they are public by default. This reduces boilerplate since you do not need to write `public` for every class. 
 
-Properties in Kotlin can be declared using `var` for mutable properties or `val` for immutable properties. When you declare a property at the class level using these keywords, Kotlin automatically generates backing fields and accessor methods, which we will explore in more detail shortly.
+One of the key requirements that distinguishes Kotlin from Java is that all properties must be initialized either at declaration, in the constructor, or within an init block. 
+
+* This requirement ensures that objects are always in a valid state when created, eliminating a whole class of potential bugs.
+
+Properties in Kotlin can be declared using `var` for mutable properties or `val` for immutable properties. 
+
+When you declare a property at the class level using these keywords, Kotlin automatically generates `backing fields` and `accessor methods`, which we will explore in more detail shortly.
 
 ### Basic Class Example
 
@@ -1191,9 +1201,17 @@ Is valid contact? true
 
 ### Key Points About Basic Classes
 
-In this example, we see three properties being declared with the `var` keyword, which makes them mutable. Each property is initialized with an empty string, satisfying Kotlin's requirement that all properties must have initial values. The class contains two methods that demonstrate how to work with these properties, using string interpolation to create formatted output.
+In this example, we see three properties being declared with the `var` keyword, which makes them mutable. 
 
-Notice that we access properties directly using dot notation rather than calling getter and setter methods as you would in Java. This is because Kotlin generates these methods automatically behind the scenes. Classes and methods in Kotlin are public by default, so we do not need to explicitly declare them as public. If you wanted to create private fields similar to Java's instance variables, you would use the `private` modifier before the property declaration.
+Each property is initialized with an empty string, satisfying Kotlin's requirement that all properties must have initial values. 
+
+The class contains two methods that demonstrate how to work with these properties, using string interpolation to create formatted output.
+
+Notice that we access properties directly using dot notation rather than calling getter and setter methods as you would in Java. 
+
+This is because Kotlin generates these methods automatically behind the scenes. 
+
+Classes and methods in Kotlin are public by default, so we do not need to explicitly declare them as public. If you wanted to create private fields similar to Java's instance variables, you would use the `private` modifier before the property declaration.
 
 ---
 
