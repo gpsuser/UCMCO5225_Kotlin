@@ -221,7 +221,9 @@ The function type syntax is straightforward once you understand the pattern.
 
 You write the parameter types inside parentheses, separated by commas, then use an arrow operator, and finally specify the return type. 
 
-For example, a function that takes two integers and returns an integer has the type `(Int, Int) -> Int`. A function with no parameters that returns nothing has the type `() -> Unit`.
+For example, a function that takes two integers and returns an integer has the type `(Int, Int) -> Int`. 
+
+* A function with no parameters that returns nothing has the type `() -> Unit`.
 
 This type system is what makes functions first-class citizens in Kotlin. 
 
@@ -235,9 +237,17 @@ Understanding function types is crucial because it opens up powerful programming
 
 ### Understanding Default Parameters
 
-Kotlin provides an elegant solution to a common problem in programming: the need for multiple versions of the same function that differ only in having different numbers of parameters. By allowing you to specify default values for function parameters, Kotlin eliminates much of the boilerplate code that would require multiple overloaded methods in languages like Java.
+Kotlin provides an elegant solution to a common problem in programming: 
 
-When you define a function with default parameter values, callers can omit those parameters when calling the function, and the defaults will be used automatically. This makes your code more flexible and easier to maintain. Furthermore, Kotlin enhances this feature with named parameters, which allow you to specify which argument corresponds to which parameter, regardless of order.
+* the need for multiple versions of the same function that differ only in having different numbers of parameters. 
+
+By allowing you to specify default values for function parameters, Kotlin eliminates much of the boilerplate code that would require multiple `overloaded methods` in languages like Java.
+
+When you define a function with default parameter values, callers can omit those parameters when calling the function, and the defaults will be used automatically. 
+
+This makes your code more flexible and easier to maintain. 
+
+Furthermore, Kotlin enhances this feature with named parameters, which allow you to specify which argument corresponds to which parameter, `regardless of order.`
 
 Named parameters become particularly valuable when a function has many parameters, as they make the code self-documenting and prevent errors that might occur from passing arguments in the wrong order.
 
@@ -468,9 +478,15 @@ Custom distance with insurance (5kg, 300km):
 
 ### Benefits of Default Parameters and Named Arguments
 
-Default parameters significantly reduce code duplication by eliminating the need for multiple overloaded methods that differ only in which parameters they accept. Instead of writing three or four versions of the same function, you write one comprehensive version with sensible defaults. This approach is more maintainable because any changes to the function logic only need to be made in one place.
+Default parameters significantly reduce code duplication by eliminating the need for multiple overloaded methods that differ only in which parameters they accept. 
 
-Named parameters make your code more self-documenting and less error-prone, especially when calling functions with many parameters or when you want to override only specific defaults while leaving others unchanged. The combination of these two features allows you to create flexible, user-friendly APIs that are both powerful and easy to use correctly.
+Instead of writing three or four versions of the same function, you write one comprehensive version with sensible defaults. 
+
+* This approach is more maintainable because any changes to the function logic only need to be made in one place.
+
+* Named parameters make your code more self-documenting and less error-prone, especially when calling functions with many parameters or when you want to override only specific defaults while leaving others unchanged. 
+
+The combination of these two features allows you to create flexible, user-friendly APIs that are both powerful and easy to use correctly.
 
 ---
 
@@ -478,11 +494,23 @@ Named parameters make your code more self-documenting and less error-prone, espe
 
 ### Understanding Lambda Expressions
 
-Lambda expressions represent one of the most powerful features in Kotlin, bringing the elegance of functional programming into your everyday coding. A lambda expression is essentially an anonymous function, meaning it is a block of code that can be treated as a value without needing a formal function declaration with a name. You can store lambdas in variables, pass them as arguments to other functions, or return them from functions.
+Lambda expressions represent one of the most powerful features in Kotlin, bringing the elegance of functional programming into your everyday coding. 
 
-The syntax for lambda expressions is distinctive: the code is enclosed in curly braces, parameters are listed before an arrow operator, and the function body follows the arrow. When a lambda has only a single parameter, Kotlin provides a convenient shorthand by allowing you to omit the parameter declaration entirely and refer to that parameter using the special identifier `it`.
+A lambda expression is essentially an `anonymous function,` meaning it is a block of code that can be treated as a value without needing a formal function declaration with a name. 
 
-The last expression in a lambda automatically becomes the return value, so you typically do not need explicit return statements. This makes lambdas particularly concise for simple operations while still being powerful enough for complex logic.
+You can:
+
+* store lambdas in variables
+* pass them as arguments to other functions
+* return them from functions
+
+The syntax for lambda expressions is distinctive: the code is enclosed in curly braces, parameters are listed before an arrow operator, and `the function body follows the arrow`. 
+
+When a lambda has only a single parameter, Kotlin provides a convenient shorthand by allowing you to omit the parameter declaration entirely and refer to that parameter using the special identifier `it`.
+
+`The last expression in a lambda automatically becomes the return value,` so you typically do not need explicit return statements. 
+
+This makes lambdas particularly concise for simple operations while still being powerful enough for complex logic.
 
 ### Lambda Expression Example
 
@@ -731,9 +759,15 @@ Hello, Bob!
 
 ### Understanding Lambda Syntax and Behavior
 
-Lambda expressions provide an incredibly concise way to represent small pieces of functionality. The implicit return of the last expression means you rarely need explicit return statements, making the code cleaner and more readable. When a lambda captures variables from its surrounding scope, it creates what is called a closure, allowing the lambda to access and modify those variables even after the function that created them has finished executing.
+Lambda expressions provide an incredibly concise way to represent small pieces of functionality. 
 
-The single-parameter shorthand using `it` is particularly convenient for simple operations, though you should use explicit parameter names when it improves readability. Lambda expressions work seamlessly with Kotlin's collection functions like filter, map, and forEach, enabling you to write expressive data processing pipelines with minimal code.
+The implicit return of the last expression means you rarely need explicit return statements, making the code cleaner and more readable. 
+
+When a lambda captures variables from its surrounding scope, it creates what is called a `closure`, allowing the lambda to access and modify those variables even after the function that created them has finished executing.
+
+The single-parameter shorthand using `it` is particularly convenient for simple operations, though `you should use explicit parameter names when it improves readability`. 
+
+Lambda expressions work seamlessly with Kotlin's collection functions like filter, map, and forEach, enabling you to write expressive data processing pipelines with `minimal code`.
 
 ---
 
