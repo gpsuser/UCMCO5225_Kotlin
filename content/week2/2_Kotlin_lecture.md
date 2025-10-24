@@ -70,9 +70,15 @@ This combination makes Kotlin particularly expressive and powerful for modern ap
 
 In traditional Java programming, we typically refer to methods, which are functions that belong to a class. 
 
-Kotlin takes a broader and more flexible approach by allowing functions to exist independently outside of classes. While every method is indeed a function, not every function needs to be a method. This distinction becomes particularly important when we explore functional programming patterns.
+Kotlin takes a broader and more flexible approach by allowing functions to exist independently outside of classes. 
 
-Functions in Kotlin are first-class citizens, which means they have types just like variables do. The type of a function describes its signature, specifically what parameters it accepts and what type of value it returns. This type system uses a special syntax that makes the function's contract immediately clear and enables us to pass functions around as values.
+While every method is indeed a function, not every function needs to be a method. This distinction becomes particularly important when we explore functional programming patterns.
+
+* Functions in Kotlin are first-class citizens, which means they have types just like variables do. 
+
+The type of a function describes its signature, specifically what parameters it accepts and what type of value it returns. 
+
+This type system uses a special syntax that makes the function's contract immediately clear and enables us to `pass functions around as values`.
 
 ### Function Types Example
 
