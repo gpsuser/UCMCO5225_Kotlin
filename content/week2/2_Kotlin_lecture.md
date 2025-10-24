@@ -48,11 +48,19 @@
 
 ## Section 1: Introduction & Overview (2 minutes)
 
-Welcome to this comprehensive lecture on Kotlin functions and classes. Today we will embark on a journey that begins with understanding how Kotlin treats functions as first-class citizens, enabling powerful functional programming patterns. We will then explore how these functional concepts integrate seamlessly with Kotlin's approach to object-oriented programming, which significantly improves upon traditional class structures.
+Welcome to this comprehensive lecture on Kotlin functions and classes. Today we will embark on a journey that begins with understanding how Kotlin treats functions as first-class citizens, enabling powerful functional programming patterns. 
 
-The lecture is intentionally organized to teach functions first because understanding how functions work as values is crucial to grasping many of Kotlin's modern features. Once we have established a solid foundation in functional programming concepts including lambdas and higher-order functions, we will transition to exploring classes. You will see how the functional concepts we learn early on enhance our ability to work with classes through features like extension functions.
+We will then explore how these functional concepts integrate seamlessly with Kotlin's approach to object-oriented programming, which significantly improves upon traditional class structures.
 
-By structuring our learning this way, you will develop a complete understanding of both paradigms and see how Kotlin elegantly combines functional and object-oriented programming. This combination makes Kotlin particularly expressive and powerful for modern application development.
+The lecture is intentionally organized to teach functions first because understanding how functions work as values is crucial to grasping many of Kotlin's modern features. 
+
+Once we have established a solid foundation in functional programming concepts including lambdas and higher-order functions, we will transition to exploring classes. 
+
+You will see how the functional concepts we learn early on enhance our ability to work with classes through features like extension functions.
+
+By structuring our learning this way, you will develop a complete understanding of both paradigms and see how Kotlin elegantly combines functional and object-oriented programming. 
+
+This combination makes Kotlin particularly expressive and powerful for modern application development.
 
 ---
 
@@ -203,9 +211,17 @@ Hello John Smith
 
 ### Understanding Function Type Syntax
 
-The function type syntax is straightforward once you understand the pattern. You write the parameter types inside parentheses, separated by commas, then use an arrow operator, and finally specify the return type. For example, a function that takes two integers and returns an integer has the type `(Int, Int) -> Int`. A function with no parameters that returns nothing has the type `() -> Unit`.
+The function type syntax is straightforward once you understand the pattern. 
 
-This type system is what makes functions first-class citizens in Kotlin. Because functions have types, you can store them in variables, pass them as arguments to other functions, and return them from functions. Understanding function types is crucial because it opens up powerful programming patterns that we will explore throughout this lecture.
+You write the parameter types inside parentheses, separated by commas, then use an arrow operator, and finally specify the return type. 
+
+For example, a function that takes two integers and returns an integer has the type `(Int, Int) -> Int`. A function with no parameters that returns nothing has the type `() -> Unit`.
+
+This type system is what makes functions first-class citizens in Kotlin. 
+
+* Because functions have types, you can store them in variables, pass them as arguments to other functions, and return them from functions. 
+
+Understanding function types is crucial because it opens up powerful programming patterns that we will explore throughout this lecture.
 
 ---
 
