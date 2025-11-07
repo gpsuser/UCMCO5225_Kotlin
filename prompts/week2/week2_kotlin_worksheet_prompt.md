@@ -1,4 +1,4 @@
-# Week 2: Worksheet
+# Week X: Worksheet
 
 (Note - use normal model and extended thinking with latest sonnet)
 
@@ -13,7 +13,7 @@ The quiz section should contain 4 questions, organised as follows:
 
 The quiz questions should be relevant to the lecture content and should test the student's understanding of the material covered in the lecture. The questions should be clear and concise, and should be appropriate for students at an introductory level of programming.
 
-The quiz questions should be in markdown format, with appropriate headings and subheadings to organize the content. Use bullet points and numbered lists where appropriate to make the content easy to read and understand. Use ascci art for diagrams where appropriate to illustrate concepts.
+The quiz questions should be in markdown format, with appropriate headings and subheadings to organize the content. Use bullet points and numbered lists where appropriate to make the content easy to read and understand. Use ascci for diagrams where appropriate to illustrate concepts.
 
 The quiz questions should be designed to be completed within a reasonable amount of time, such as 5 to 10 minutes for the entire quiz.
 
@@ -36,6 +36,6 @@ Please provide the answers to both the quiz section and the tasks section in a s
 ## Note
 * Do not provide place for  students to enter their information or any other personal data in the worksheet.
 * Do not provide submission instructions or guidelines in the worksheet.
-* The worksheet heading should just contain the title "Lecture X: Python Worksheet" - do not include any other information in the heading.
+* The worksheet heading should just contain the title "Lecture X: `Kotlin` Worksheet" - do not include any other information in the heading.
 * Do not mention the word "cloze" or similar in the worksheet.
 
