@@ -1,5 +1,5 @@
 # Type Systems and Generics in Kotlin
-**CO5225 – Lecture 4**
+**CO5225**
 
 ---
 

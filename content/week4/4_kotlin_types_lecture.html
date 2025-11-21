@@ -1,69 +1,23 @@
 <h1 id="type-systems-and-generics-in-kotlin">Type Systems and Generics
 in Kotlin</h1>
-<p><strong>CO5225 – Lecture 4</strong></p>
+<p><strong>CO5225</strong></p>
 <hr />
 <h2 id="table-of-contents">Table of Contents</h2>
-<table>
-<colgroup>
-<col style="width: 40%" />
-<col style="width: 31%" />
-<col style="width: 27%" />
-</colgroup>
-<thead>
-<tr>
-<th>Section</th>
-<th>Topic</th>
-<th>Time</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td><a href="#learning-outcomes">Learning Outcomes</a></td>
-<td>2 min</td>
-</tr>
-<tr>
-<td>2</td>
-<td><a href="#1-introduction-to-type-systems">Introduction to Type
-Systems</a></td>
-<td>5 min</td>
-</tr>
-<tr>
-<td>3</td>
-<td><a href="#2-type-safety">Type Safety</a></td>
-<td>5 min</td>
-</tr>
-<tr>
-<td>4</td>
-<td><a href="#3-static-vs-dynamic-typing">Static vs Dynamic
-Typing</a></td>
-<td>10 min</td>
-</tr>
-<tr>
-<td>5</td>
-<td><a href="#4-kotlins-type-system-features">Kotlin’s Type System
-Features</a></td>
-<td>10 min</td>
-</tr>
-<tr>
-<td>6</td>
-<td><a href="#5-strong-vs-weak-typing">Strong vs Weak Typing</a></td>
-<td>8 min</td>
-</tr>
-<tr>
-<td>7</td>
-<td><a href="#6-introduction-to-generics">Introduction to
-Generics</a></td>
-<td>10 min</td>
-</tr>
-<tr>
-<td>8</td>
-<td><a href="#7-working-with-generic-types-in-kotlin">Working with
-Generic Types in Kotlin</a></td>
-<td>5 min</td>
-</tr>
-</tbody>
-</table>
+<ol type="1">
+<li><a href="#introduction-to-type-systems">Introduction to Type
+Systems</a></li>
+<li><a href="#type-safety">Type Safety</a></li>
+<li><a href="#static-vs-dynamic-typing">Static vs Dynamic
+Typing</a></li>
+<li><a href="#kotlins-type-system-features">Kotlin's Type System
+Features</a></li>
+<li><a href="#strong-vs-weak-typing">Strong vs Weak Typing</a></li>
+<li><a href="#introduction-to-generics">Introduction to
+Generics</a></li>
+<li><a href="#working-with-generic-types-in-kotlin">Working with
+Generic Types in Kotlin</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
 <hr />
 <h2 id="learning-outcomes">Learning Outcomes</h2>
 <p>By the end of this lecture, you will be able to:</p>
@@ -83,7 +37,6 @@ they’re useful</li>
 <hr />
 <h2 id="introduction-to-type-systems">1. Introduction to Type
 Systems</h2>
-<p><strong>Time: 5 minutes</strong></p>
 <p>Every programming language has a <strong>type system</strong> - a set
 of rules that defines how the language categorizes and manages different
 kinds of data. Understanding type systems is crucial because they affect
@@ -112,7 +65,6 @@ runtime (while the program runs)
 software, debug errors, and maintain code over time.</p>
 <hr />
 <h2 id="type-safety">2. Type Safety</h2>
-<p><strong>Time: 5 minutes</strong></p>
 <h3 id="what-is-type-safety">What is Type Safety?</h3>
 <p><strong>Type safety</strong> refers to how well a programming
 language prevents <strong>type errors</strong> - situations where one
@@ -136,7 +88,6 @@ flexibility in certain scenarios</p>
 spectrum.</p>
 <hr />
 <h2 id="static-vs-dynamic-typing">3. Static vs Dynamic Typing</h2>
-<p><strong>Time: 10 minutes</strong></p>
 <h3 id="statically-typed-languages">Statically Typed Languages</h3>
 <p>In a <strong>statically typed language</strong>, the type of every
 variable is known at <strong>compile time</strong>. The compiler
@@ -264,7 +215,6 @@ strings, which could be a bug if you expected numeric addition.</p>
 <hr />
 <h2 id="kotlins-type-system-features">4. Kotlin’s Type System
 Features</h2>
-<p><strong>Time: 10 minutes</strong></p>
 <h3 id="type-inference">Type Inference</h3>
 <p>One question you might ask is: “Do statically typed languages require
 you to declare the type of every variable?”</p>
@@ -397,7 +347,6 @@ class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb8-1"><a hr
 <span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
 <hr />
 <h2 id="strong-vs-weak-typing">5. Strong vs Weak Typing</h2>
-<p><strong>Time: 8 minutes</strong></p>
 <h3 id="defining-strong-and-weak-typing">Defining Strong and Weak
 Typing</h3>
 <p>The terms “strong” and “weak” typing are less precisely defined than
@@ -524,7 +473,6 @@ more likely to be statically typed. Why? Because enforcing strict type
 compatibility is easier to do at compile time rather than runtime.</p>
 <hr />
 <h2 id="introduction-to-generics">6. Introduction to Generics</h2>
-<p><strong>Time: 10 minutes</strong></p>
 <h3 id="the-problem-generics-solve">The Problem Generics Solve</h3>
 <p>Imagine you’re building a program and you need several lists: - A
 list of strings (student names) - A list of integers (test scores) - A
@@ -685,7 +633,6 @@ class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb14-1"><a h
 <hr />
 <h2 id="working-with-generic-types-in-kotlin">7. Working with Generic
 Types in Kotlin</h2>
-<p><strong>Time: 5 minutes</strong></p>
 <h3 id="type-inference-with-generics">Type Inference with Generics</h3>
 <p>Just like with regular variables, Kotlin can infer generic type
 parameters:</p>
@@ -928,6 +875,6 @@ understanding: - More advanced generic features (variance, constraints)
 generic classes and functions</p>
 <p>Remember: Kotlin’s type system is designed to catch errors early
 while maintaining code clarity. Embrace the type safety - it’s there to
-help you write better, more reliable code!</p>
+help you write better, more reliable code.</p>
 <hr />
 <p><strong>End of Lecture</strong></p>
