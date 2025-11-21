@@ -1,53 +1,38 @@
 # Inheritance, Abstract Classes and Interfaces in Kotlin
-## CO5225 - Lecture Session
+
 
 ---
 
 ## Table of Contents
 
-| Section | Topic | Time Allocation |
-|---------|-------|-----------------|
-| 1 | Introduction and Overview | 3 minutes |
-| 2 | Making Classes Inheritable in Kotlin | 8 minutes |
-| 3 | Primary Constructors in Inheritance | 7 minutes |
-| 4 | Overriding Methods | 7 minutes |
-| 5 | Interfaces in Kotlin | 8 minutes |
-| 6 | Abstract Classes | 7 minutes |
-| 7 | Single Responsibility Principle | 5 minutes |
-| 8 | Object Composition and Whole-Part Relationships | 5 minutes |
-| 9 | Liskov Substitution Principle (LSP) | 5 minutes |
-| **Total** | | **55 minutes** |
-
----
-
-## Learning Objectives (SMART)
-
-| Objective | Description |
-|-----------|-------------|
-| **Specific** | Students will understand and implement inheritance in Kotlin using the `open` keyword |
-| **Measurable** | Students will create at least one working inheritance hierarchy with proper constructor calling |
-| **Achievable** | Students will distinguish between abstract classes and interfaces and when to use each |
-| **Relevant** | Students will apply the Liskov Substitution Principle to ensure proper inheritance design |
-| **Time-bound** | By the end of this 55-minute session, students will demonstrate understanding through code examples |
+1. [Introduction and Overview](#section-1-introduction-and-overview)
+2. [Making Classes Inheritable in Kotlin](#section-2-making-classes-inheritable-in-kotlin)
+3. [Primary Constructors in Inheritance](#section-3-primary-constructors-in-inheritance)
+4. [Overriding Methods](#section-4-overriding-methods)
+5. [Interfaces in Kotlin](#section-5-interfaces-in-kotlin)
+6. [Abstract Classes](#section-6-abstract-classes)
+7. [Single Responsibility Principle](#section-7-single-responsibility-principle)
+8. [Object Composition and Whole-Part Relationships](#section-8-object-composition-and-whole-part-relationships)
+9. [Liskov Substitution Principle (LSP)](#section-9-liskov-substitution-principle-lsp)
 
 ---
 
 ## Learning Outcomes
 
-| ID | Learning Outcome |
-|----|------------------|
-| **LO1** | Explain why Kotlin classes are final by default and use the `open` keyword to enable inheritance |
-| **LO2** | Implement inheritance hierarchies with proper primary constructor calling |
-| **LO3** | Override methods correctly using the `open` and `override` keywords |
-| **LO4** | Create and implement interfaces with and without default implementations |
-| **LO5** | Design abstract classes and understand their differences from interfaces |
-| **LO6** | Apply the Single Responsibility Principle to class design |
-| **LO7** | Distinguish between aggregation and composition in object relationships |
-| **LO8** | Apply the Liskov Substitution Principle to ensure proper subtype behavior |
+Learning outcomes for this lecture session are as follows:
+
+* Explain why Kotlin classes are final by default and use the `open` keyword to enable inheritance
+* Implement inheritance hierarchies with proper primary constructor calling
+* Override methods correctly using the `open` and `override` keywords
+* Create and implement interfaces with and without default implementations
+* Design abstract classes and understand their differences from interfaces
+* Apply the Single Responsibility Principle to class design
+* Distinguish between aggregation and composition in object relationships
+* Apply the Liskov Substitution Principle to ensure proper subtype behavior
 
 ---
 
-## Section 1: Introduction and Overview (3 minutes)
+## Section 1: Introduction and Overview
 
 Welcome to today's lecture on Inheritance and the Liskov Substitution Principle in Kotlin. Today, we'll explore one of the fundamental concepts of Object-Oriented Programming: inheritance, and how Kotlin handles it differently from languages like Java.
 
@@ -62,7 +47,7 @@ Unlike Java, where classes are open for inheritance by default, Kotlin takes a m
 
 ---
 
-## Section 2: Making Classes Inheritable in Kotlin (8 minutes)
+## Section 2: Making Classes Inheritable in Kotlin
 
 ### The Default: Final Classes
 
@@ -172,7 +157,7 @@ Woof!
 
 ---
 
-## Section 3: Primary Constructors in Inheritance (7 minutes)
+## Section 3: Primary Constructors in Inheritance
 
 ### The Constructor Calling Rule
 
@@ -275,7 +260,7 @@ ID: S12345
 
 ---
 
-## Section 4: Overriding Methods (7 minutes)
+## Section 4: Overriding Methods
 
 ### Methods Must Be Marked as `open`
 
@@ -418,7 +403,7 @@ Dimensions: 4.0 x 6.0
 
 ---
 
-## Section 5: Interfaces in Kotlin (8 minutes)
+## Section 5: Interfaces in Kotlin
 
 ### What is an Interface?
 
@@ -646,7 +631,7 @@ Charging battery (75 kWh)
 
 ---
 
-## Section 6: Abstract Classes (7 minutes)
+## Section 6: Abstract Classes
 
 ### What is an Abstract Class?
 
@@ -830,7 +815,7 @@ Status: Disconnected
 
 ---
 
-## Section 7: Single Responsibility Principle (5 minutes)
+## Section 7: Single Responsibility Principle
 
 ### The Principle
 
@@ -955,7 +940,7 @@ Salary: $50000.0
 
 ---
 
-## Section 8: Object Composition and Whole-Part Relationships (5 minutes)
+## Section 8: Object Composition and Whole-Part Relationships
 
 ### The Concept
 
@@ -1150,7 +1135,7 @@ Contracts:
 
 ---
 
-## Section 9: Liskov Substitution Principle (LSP) (5 minutes)
+## Section 9: Liskov Substitution Principle (LSP)
 
 ### The Principle
 

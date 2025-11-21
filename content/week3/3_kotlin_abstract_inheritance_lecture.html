@@ -1,0 +1,1372 @@
+<h1
+id="inheritance-abstract-classes-and-interfaces-in-kotlin">Inheritance,
+Abstract Classes and Interfaces in Kotlin</h1>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol type="1">
+<li><a href="#section-1-introduction-and-overview">Introduction and
+Overview</a></li>
+<li><a href="#section-2-making-classes-inheritable-in-kotlin">Making
+Classes Inheritable in Kotlin</a></li>
+<li><a href="#section-3-primary-constructors-in-inheritance">Primary
+Constructors in Inheritance</a></li>
+<li><a href="#section-4-overriding-methods">Overriding Methods</a></li>
+<li><a href="#section-5-interfaces-in-kotlin">Interfaces in
+Kotlin</a></li>
+<li><a href="#section-6-abstract-classes">Abstract Classes</a></li>
+<li><a href="#section-7-single-responsibility-principle">Single
+Responsibility Principle</a></li>
+<li><a
+href="#section-8-object-composition-and-whole-part-relationships">Object
+Composition and Whole-Part Relationships</a></li>
+<li><a href="#section-9-liskov-substitution-principle-lsp">Liskov
+Substitution Principle (LSP)</a></li>
+</ol>
+<hr />
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>Learning outcomes for this lecture session are as follows:</p>
+<ul>
+<li>Explain why Kotlin classes are final by default and use the
+<code>open</code> keyword to enable inheritance</li>
+<li>Implement inheritance hierarchies with proper primary constructor
+calling</li>
+<li>Override methods correctly using the <code>open</code> and
+<code>override</code> keywords</li>
+<li>Create and implement interfaces with and without default
+implementations</li>
+<li>Design abstract classes and understand their differences from
+interfaces</li>
+<li>Apply the Single Responsibility Principle to class design</li>
+<li>Distinguish between aggregation and composition in object
+relationships</li>
+<li>Apply the Liskov Substitution Principle to ensure proper subtype
+behavior</li>
+</ul>
+<hr />
+<h2 id="section-1-introduction-and-overview">Section 1: Introduction and
+Overview</h2>
+<p>Welcome to today’s lecture on Inheritance and the Liskov Substitution
+Principle in Kotlin. Today, we’ll explore one of the fundamental
+concepts of Object-Oriented Programming: inheritance, and how Kotlin
+handles it differently from languages like Java.</p>
+<p><strong>Why Inheritance Matters:</strong> - Enables code reuse
+through hierarchical relationships - Allows us to model real-world
+“is-a” relationships - Forms the foundation for polymorphism - Critical
+for building maintainable, scalable applications</p>
+<p><strong>Kotlin’s Unique Approach:</strong> Unlike Java, where classes
+are open for inheritance by default, Kotlin takes a more restrictive
+approach. This design decision helps prevent fragile base class problems
+and encourages more intentional inheritance hierarchies.</p>
+<hr />
+<h2 id="section-2-making-classes-inheritable-in-kotlin">Section 2:
+Making Classes Inheritable in Kotlin</h2>
+<h3 id="the-default-final-classes">The Default: Final Classes</h3>
+<p>By default, <strong>all classes in Kotlin are final</strong> – they
+cannot be inherited. This is equivalent to explicitly marking every Java
+class with the <code>final</code> keyword.</p>
+<p><strong>Why this design decision?</strong> - Prevents unintended
+inheritance - Encourages composition over inheritance - Reduces fragile
+base class problem - Makes inheritance intentional, not accidental</p>
+<h3 id="the-open-keyword">The <code>open</code> Keyword</h3>
+<p>To make a class inheritable, you must explicitly mark it with the
+<code>open</code> keyword:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This class CANNOT be inherited (default behavior)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> FinalClass <span class="op">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">name</span> <span class="op">=</span> <span class="st">&quot;I cannot be inherited&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">// This class CAN be inherited</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">class</span> BaseClass <span class="op">{</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">name</span> <span class="op">=</span> <span class="st">&quot;I can be inherited&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">// This creates a valid inheritance hierarchy</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SubClass <span class="op">:</span> <span class="dt">BaseClass</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Inherits &#39;name&#39; property from BaseClass</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">obj</span> <span class="op">=</span> SubClass<span class="op">()</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span>obj<span class="op">.</span>name<span class="op">)</span>  <span class="co">// Output: I can be inherited</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This would cause a compilation error:</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">// class CannotInherit : FinalClass()  // ERROR!</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>I can be inherited</code></pre>
+<h3 id="inheritance-chains-require-open">Inheritance Chains Require
+<code>open</code></h3>
+<p><strong>Important rule:</strong> If a class is inherited, and you
+want to inherit from it further, it must also be declared as
+<code>open</code>.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Base class - must be open</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">class</span> Animal <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">makeSound</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Some generic animal sound&quot;</span><span class="op">)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Middle class - must be open if we want to inherit from it</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">class</span> Mammal <span class="op">:</span> <span class="dt">Animal</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">makeSound</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Mammal sound&quot;</span><span class="op">)</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">// Final derived class - no need for &#39;open&#39; if no further inheritance</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Dog <span class="op">:</span> <span class="dt">Mammal</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">makeSound</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Woof!&quot;</span><span class="op">)</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">// This would not compile without &#39;open&#39; on Mammal:</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">// class Cat : Mammal()  // Would fail if Mammal wasn&#39;t open</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">dog</span> <span class="op">=</span> Dog<span class="op">()</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    dog<span class="op">.</span>makeSound<span class="op">()</span>  <span class="co">// Output: Woof!</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Woof!</code></pre>
+<h3 id="visual-representation">Visual Representation</h3>
+<pre><code>    ┌──────────┐
+    │  Animal  │  (open)
+    │  (open)  │
+    └────┬─────┘
+         │
+         │ inherits
+         ▼
+    ┌──────────┐
+    │  Mammal  │  (open - allows further inheritance)
+    │  (open)  │
+    └────┬─────┘
+         │
+         │ inherits
+         ▼
+    ┌──────────┐
+    │   Dog    │  (final - no further inheritance needed)
+    └──────────┘</code></pre>
+<hr />
+<h2 id="section-3-primary-constructors-in-inheritance">Section 3:
+Primary Constructors in Inheritance</h2>
+<h3 id="the-constructor-calling-rule">The Constructor Calling Rule</h3>
+<p><strong>Critical concept:</strong> If a superclass has a primary
+constructor, it <strong>must</strong> be called when the subclass is
+created. This is done directly in the class header.</p>
+<h3 id="basic-example">Basic Example</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Base class with a primary constructor</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">class</span> BaseClass<span class="op">(</span><span class="kw">val</span> <span class="va">x</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    init <span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;BaseClass initialized with x = </span><span class="ss">$x</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Subclass must call the base constructor</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SubClass<span class="op">(</span><span class="va">x</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">:</span> <span class="dt">BaseClass</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    init <span class="op">{</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;SubClass initialized&quot;</span><span class="op">)</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">obj</span> <span class="op">=</span> SubClass<span class="op">(</span><span class="dv">42</span><span class="op">)</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Value of x: </span><span class="ss">${</span>obj<span class="op">.</span>x<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>BaseClass initialized with x = 42
+SubClass initialized
+Value of x: 42</code></pre>
+<h3 id="more-complex-example-adding-subclass-properties">More Complex
+Example: Adding Subclass Properties</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Vehicle base class</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">class</span> Vehicle<span class="op">(</span><span class="kw">val</span> <span class="va">make</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="kw">val</span> <span class="va">year</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">displayInfo</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Vehicle: </span><span class="ss">$make</span><span class="st"> (</span><span class="ss">$year</span><span class="st">)&quot;</span><span class="op">)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Car subclass with additional properties</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Car<span class="op">(</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">make</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span>           <span class="co">// Parameter to pass to superclass</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="va">year</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span>              <span class="co">// Parameter to pass to superclass</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">doors</span><span class="op">:</span> <span class="dt">Int</span>          <span class="co">// New property specific to Car</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">:</span> <span class="dt">Vehicle</span><span class="op">(</span><span class="va">make</span><span class="op">,</span> <span class="va">year</span><span class="op">)</span> <span class="op">{</span>   <span class="co">// Calling superclass constructor</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">displayInfo</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Car: </span><span class="ss">$make</span><span class="st"> (</span><span class="ss">$year</span><span class="st">) with </span><span class="ss">$doors</span><span class="st"> doors&quot;</span><span class="op">)</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">myCar</span> <span class="op">=</span> Car<span class="op">(</span><span class="st">&quot;Toyota&quot;</span><span class="op">,</span> <span class="dv">2023</span><span class="op">,</span> <span class="dv">4</span><span class="op">)</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    myCar<span class="op">.</span>displayInfo<span class="op">()</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Can access inherited properties</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Make: </span><span class="ss">${</span>myCar<span class="op">.</span>make<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Year: </span><span class="ss">${</span>myCar<span class="op">.</span>year<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Doors: </span><span class="ss">${</span>myCar<span class="op">.</span>doors<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Car: Toyota (2023) with 4 doors
+Make: Toyota
+Year: 2023
+Doors: 4</code></pre>
+<h3 id="using-val-or-var-in-subclass-constructor">Using <code>val</code>
+or <code>var</code> in Subclass Constructor</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">class</span> Person<span class="op">(</span><span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Using &#39;val&#39; in subclass - creates a NEW property</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Student<span class="op">(</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span>  <span class="co">// Overrides the property</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">studentId</span><span class="op">:</span> <span class="dt">String</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">:</span> <span class="dt">Person</span><span class="op">(</span><span class="va">name</span><span class="op">)</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">student</span> <span class="op">=</span> Student<span class="op">(</span><span class="st">&quot;Alice&quot;</span><span class="op">,</span> <span class="st">&quot;S12345&quot;</span><span class="op">)</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Name: </span><span class="ss">${</span>student<span class="op">.</span>name<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;ID: </span><span class="ss">${</span>student<span class="op">.</span>studentId<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Name: Alice
+ID: S12345</code></pre>
+<hr />
+<h2 id="section-4-overriding-methods">Section 4: Overriding Methods</h2>
+<h3 id="methods-must-be-marked-as-open">Methods Must Be Marked as
+<code>open</code></h3>
+<p>Just like classes, methods in Kotlin are <strong>final by
+default</strong>. To allow overriding, mark them with
+<code>open</code>.</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">class</span> HomeAppliance <span class="op">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This method CANNOT be overridden (default)</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">turnOn</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Appliance is turning on...&quot;</span><span class="op">)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This method CAN be overridden</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">operate</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Appliance is operating...&quot;</span><span class="op">)</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Kettle <span class="op">:</span> <span class="dt">HomeAppliance</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Override the open method</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">operate</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Kettle is boiling water...&quot;</span><span class="op">)</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Cannot override turnOn() - it&#39;s not open</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// override fun turnOn() { }  // ERROR!</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">kettle</span> <span class="op">=</span> Kettle<span class="op">()</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    kettle<span class="op">.</span>turnOn<span class="op">()</span>     <span class="co">// Inherited method</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    kettle<span class="op">.</span>operate<span class="op">()</span>    <span class="co">// Overridden method</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Appliance is turning on...
+Kettle is boiling water...</code></pre>
+<h3 id="using-super-to-call-parent-methods">Using <code>super</code> to
+Call Parent Methods</h3>
+<p>The <code>super</code> keyword allows you to call the parent class
+implementation:</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">class</span> Animal<span class="op">(</span><span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">speak</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="ss">$name</span><span class="st"> makes a sound&quot;</span><span class="op">)</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Dog<span class="op">(</span><span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Animal</span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">speak</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Call parent implementation first</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">super</span><span class="op">.</span>speak<span class="op">()</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Then add specific behavior</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="ss">$name</span><span class="st"> barks: Woof!&quot;</span><span class="op">)</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Cat<span class="op">(</span><span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Animal</span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">speak</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">// We can choose not to call super</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="ss">$name</span><span class="st"> meows: Meow!&quot;</span><span class="op">)</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">dog</span> <span class="op">=</span> Dog<span class="op">(</span><span class="st">&quot;Rex&quot;</span><span class="op">)</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">cat</span> <span class="op">=</span> Cat<span class="op">(</span><span class="st">&quot;Whiskers&quot;</span><span class="op">)</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Dog speaking:&quot;</span><span class="op">)</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    dog<span class="op">.</span>speak<span class="op">()</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Cat speaking:&quot;</span><span class="op">)</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    cat<span class="op">.</span>speak<span class="op">()</span></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Dog speaking:
+Rex makes a sound
+Rex barks: Woof!
+
+Cat speaking:
+Whiskers meows: Meow!</code></pre>
+<h3 id="complete-example-shape-hierarchy">Complete Example: Shape
+Hierarchy</h3>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">kotlin</span><span class="op">.</span><span class="im">math</span><span class="op">.</span><span class="im">PI</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">class</span> Shape<span class="op">(</span><span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">area</span><span class="op">():</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="fl">0.0</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">describe</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;This is a </span><span class="ss">$name</span><span class="st"> with area: </span><span class="ss">${</span>area<span class="op">()</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Circle<span class="op">(</span><span class="kw">val</span> <span class="va">radius</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Shape</span><span class="op">(</span>&quot;<span class="va">Circle</span>&quot;<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">area</span><span class="op">():</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> PI <span class="op">*</span> radius <span class="op">*</span> radius</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Rectangle<span class="op">(</span><span class="kw">val</span> <span class="va">width</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">val</span> <span class="va">height</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Shape</span><span class="op">(</span>&quot;<span class="va">Rectangle</span>&quot;<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">area</span><span class="op">():</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> width <span class="op">*</span> height</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">describe</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">super</span><span class="op">.</span>describe<span class="op">()</span>  <span class="co">// Call parent implementation</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Dimensions: </span><span class="ss">${</span>width<span class="ss">}</span><span class="st"> x </span><span class="ss">${</span>height<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">circle</span> <span class="op">=</span> Circle<span class="op">(</span><span class="fl">5.0</span><span class="op">)</span></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">rectangle</span> <span class="op">=</span> Rectangle<span class="op">(</span><span class="fl">4.0</span><span class="op">,</span> <span class="fl">6.0</span><span class="op">)</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>    circle<span class="op">.</span>describe<span class="op">()</span></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    println<span class="op">()</span></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    rectangle<span class="op">.</span>describe<span class="op">()</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>This is a Circle with area: 78.53981633974483
+
+This is a Rectangle with area: 24.0
+Dimensions: 4.0 x 6.0</code></pre>
+<hr />
+<h2 id="section-5-interfaces-in-kotlin">Section 5: Interfaces in
+Kotlin</h2>
+<h3 id="what-is-an-interface">What is an Interface?</h3>
+<p>An interface is essentially a <strong>contract</strong> – a set of
+function signatures that any implementing class must provide. Think of
+it as a blueprint for behavior.</p>
+<p><strong>Key characteristics:</strong> - No constructors - Cannot have
+backing fields for properties - Can have multiple implementations per
+class - Can provide default implementations - Can inherit from other
+interfaces</p>
+<h3 id="basic-interface-example">Basic Interface Example</h3>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Define an interface</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> Drivable <span class="op">{</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Abstract method - must be implemented</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">drive</span><span class="op">()</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Abstract property - must be implemented</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="fu">maxSpeed</span><span class="op">:</span> <span class="dt">Int</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="fu">Car</span> <span class="op">:</span> <span class="dt">Drivable</span> <span class="op">{</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">val</span> <span class="va">maxSpeed</span><span class="op">:</span> <span class="kw">Int</span> <span class="op">=</span> <span class="dv">200</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">drive</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Car is driving at max speed: </span><span class="ss">$maxSpeed</span><span class="st"> km/h&quot;</span><span class="op">)</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Bicycle <span class="op">:</span> <span class="dt">Drivable</span> <span class="op">{</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">val</span> <span class="va">maxSpeed</span><span class="op">:</span> <span class="kw">Int</span> <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">drive</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Bicycle is pedaling at max speed: </span><span class="ss">$maxSpeed</span><span class="st"> km/h&quot;</span><span class="op">)</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">vehicles</span><span class="op">:</span> List<span class="op">&lt;</span>Drivable<span class="op">&gt;</span> <span class="op">=</span> listOf<span class="op">(</span>Car<span class="op">(),</span> Bicycle<span class="op">())</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>vehicle <span class="kw">in</span> vehicles<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>        vehicle<span class="op">.</span>drive<span class="op">()</span></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Car is driving at max speed: 200 km/h
+Bicycle is pedaling at max speed: 30 km/h</code></pre>
+<h3 id="interfaces-with-default-implementations">Interfaces with Default
+Implementations</h3>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> Printable <span class="op">{</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">content</span><span class="op">:</span> <span class="kw">String</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Method WITHOUT default implementation</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">print</span><span class="op">()</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Method WITH default implementation</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">printWithBorder</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;=&quot;</span> <span class="op">*</span> <span class="dv">40</span><span class="op">)</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        print<span class="op">()</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;=&quot;</span> <span class="op">*</span> <span class="dv">40</span><span class="op">)</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Document<span class="op">(</span><span class="kw">override</span> <span class="kw">val</span> <span class="va">content</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Printable</span> <span class="op">{</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">print</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Document: </span><span class="ss">$content</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// printWithBorder() is inherited with default implementation</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Photo<span class="op">(</span><span class="kw">override</span> <span class="kw">val</span> <span class="va">content</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="kw">val</span> <span class="va">resolution</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Printable</span> <span class="op">{</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">print</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Photo: </span><span class="ss">$content</span><span class="st"> [</span><span class="ss">$resolution</span><span class="st">]&quot;</span><span class="op">)</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Override the default implementation</span></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">printWithBorder</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;╔&quot;</span> <span class="op">+</span> <span class="st">&quot;═&quot;</span> <span class="op">*</span> <span class="dv">38</span> <span class="op">+</span> <span class="st">&quot;╗&quot;</span><span class="op">)</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>        print<span class="op">()</span></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;╚&quot;</span> <span class="op">+</span> <span class="st">&quot;═&quot;</span> <span class="op">*</span> <span class="dv">38</span> <span class="op">+</span> <span class="st">&quot;╝&quot;</span><span class="op">)</span></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a><span class="co">// Extension function to repeat string (for demonstration)</span></span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a><span class="kw">private</span> <span class="kw">operator</span> <span class="kw">fun</span> <span class="fu">String</span><span class="op">.</span><span class="fu">times</span><span class="op">(</span><span class="va">count</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">=</span> <span class="kw">this</span><span class="op">.</span>repeat<span class="op">(</span>count<span class="op">)</span></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">doc</span> <span class="op">=</span> Document<span class="op">(</span><span class="st">&quot;Important memo&quot;</span><span class="op">)</span></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">photo</span> <span class="op">=</span> Photo<span class="op">(</span><span class="st">&quot;Sunset.jpg&quot;</span><span class="op">,</span> <span class="st">&quot;1920x1080&quot;</span><span class="op">)</span></span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Document with default border:&quot;</span><span class="op">)</span></span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>    doc<span class="op">.</span>printWithBorder<span class="op">()</span></span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Photo with custom border:&quot;</span><span class="op">)</span></span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>    photo<span class="op">.</span>printWithBorder<span class="op">()</span></span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Document with default border:
+========================================
+Document: Important memo
+========================================
+
+Photo with custom border:
+╔══════════════════════════════════════╗
+Photo: Sunset.jpg [1920x1080]
+╚══════════════════════════════════════╝</code></pre>
+<h3 id="multiple-interfaces">Multiple Interfaces</h3>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> Flyable <span class="op">{</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">fly</span><span class="op">()</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> <span class="fu">Swimmable</span> <span class="op">{</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">swim</span><span class="op">()</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">// Class implementing multiple interfaces</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="fu">Duck</span> <span class="op">:</span> <span class="dt">Flyable</span>, <span class="fu">Swimmable</span> <span class="op">{</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">fly</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Duck is flying&quot;</span><span class="op">)</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">swim</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Duck is swimming&quot;</span><span class="op">)</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Airplane <span class="op">:</span> <span class="dt">Flyable</span> <span class="op">{</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">fly</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Airplane is flying&quot;</span><span class="op">)</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">duck</span> <span class="op">=</span> Duck<span class="op">()</span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>    duck<span class="op">.</span>fly<span class="op">()</span></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>    duck<span class="op">.</span>swim<span class="op">()</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">plane</span> <span class="op">=</span> Airplane<span class="op">()</span></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>    plane<span class="op">.</span>fly<span class="op">()</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Duck is flying
+Duck is swimming
+Airplane is flying</code></pre>
+<h3 id="interface-inheritance">Interface Inheritance</h3>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> Vehicle <span class="op">{</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">move</span><span class="op">()</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> <span class="fu">MotorizedVehicle</span> <span class="op">:</span> <span class="dt">Vehicle</span> <span class="op">{</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">fuelType</span><span class="op">:</span> <span class="kw">String</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">refuel</span><span class="op">()</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> <span class="fu">ElectricVehicle</span> <span class="op">:</span> <span class="dt">Vehicle</span> <span class="op">{</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">batteryCapacity</span><span class="op">:</span> <span class="kw">Int</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">charge</span><span class="op">()</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="fu">GasCar</span><span class="op">(</span><span class="kw">override</span> <span class="kw">val</span> <span class="va">fuelType</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">:</span> <span class="dt">MotorizedVehicle</span> <span class="op">{</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">move</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Gas car moving using </span><span class="ss">$fuelType</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">refuel</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Refueling with </span><span class="ss">$fuelType</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ElectricCar<span class="op">(</span><span class="kw">override</span> <span class="kw">val</span> <span class="va">batteryCapacity</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">:</span> <span class="dt">ElectricVehicle</span> <span class="op">{</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">move</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Electric car moving silently&quot;</span><span class="op">)</span></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">charge</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Charging battery (</span><span class="ss">$batteryCapacity</span><span class="st"> kWh)&quot;</span><span class="op">)</span></span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">gasCar</span> <span class="op">=</span> GasCar<span class="op">(</span><span class="st">&quot;Petrol&quot;</span><span class="op">)</span></span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>    gasCar<span class="op">.</span>move<span class="op">()</span></span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>    gasCar<span class="op">.</span>refuel<span class="op">()</span></span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a>    println<span class="op">()</span></span>
+<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">electricCar</span> <span class="op">=</span> ElectricCar<span class="op">(</span><span class="dv">75</span><span class="op">)</span></span>
+<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a>    electricCar<span class="op">.</span>move<span class="op">()</span></span>
+<span id="cb24-44"><a href="#cb24-44" aria-hidden="true" tabindex="-1"></a>    electricCar<span class="op">.</span>charge<span class="op">()</span></span>
+<span id="cb24-45"><a href="#cb24-45" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Gas car moving using Petrol
+Refueling with Petrol
+
+Electric car moving silently
+Charging battery (75 kWh)</code></pre>
+<hr />
+<h2 id="section-6-abstract-classes">Section 6: Abstract Classes</h2>
+<h3 id="what-is-an-abstract-class">What is an Abstract Class?</h3>
+<p>An abstract class is a class that <strong>cannot be
+instantiated</strong> directly. It may contain: - Abstract methods (no
+implementation) - Concrete methods (with implementation) - Properties
+with backing fields - Constructors</p>
+<p><strong>Key differences from interfaces:</strong> - Can have state
+(backing fields) - Can have constructors - A class can inherit from only
+ONE abstract class - Open by definition (no need for <code>open</code>
+keyword)</p>
+<h3 id="basic-abstract-class">Basic Abstract Class</h3>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Abstract class - cannot be instantiated</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="kw">abstract</span> <span class="kw">class</span> Employee<span class="op">(</span><span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="kw">val</span> <span class="va">id</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Concrete property</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">yearsOfService</span><span class="op">:</span> <span class="kw">Int</span> <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Abstract method - must be implemented</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">abstract</span> <span class="kw">fun</span> <span class="fu">calculateSalary</span><span class="op">():</span> <span class="dt">Double</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Concrete method - can be used as-is or overridden</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">displayInfo</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Employee: </span><span class="ss">$name</span><span class="st"> (ID: </span><span class="ss">$id</span><span class="st">)&quot;</span><span class="op">)</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Years of service: </span><span class="ss">$yearsOfService</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Salary: </span><span class="ss">$${</span>calculateSalary<span class="op">()</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> FullTimeEmployee<span class="op">(</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>    <span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="va">id</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">annualSalary</span><span class="op">:</span> <span class="dt">Double</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">:</span> <span class="dt">Employee</span><span class="op">(</span><span class="va">name</span><span class="op">,</span> <span class="va">id</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">calculateSalary</span><span class="op">():</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> annualSalary <span class="op">/</span> <span class="dv">12</span>  <span class="co">// Monthly salary</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ContractEmployee<span class="op">(</span></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>    <span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>    <span class="va">id</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">hourlyRate</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span></span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">hoursWorked</span><span class="op">:</span> <span class="dt">Int</span></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">:</span> <span class="dt">Employee</span><span class="op">(</span><span class="va">name</span><span class="op">,</span> <span class="va">id</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">calculateSalary</span><span class="op">():</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> hourlyRate <span class="op">*</span> hoursWorked</span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">fullTime</span> <span class="op">=</span> FullTimeEmployee<span class="op">(</span><span class="st">&quot;Alice Johnson&quot;</span><span class="op">,</span> <span class="st">&quot;FT001&quot;</span><span class="op">,</span> <span class="fl">60000.0</span><span class="op">)</span></span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a>    fullTime<span class="op">.</span>yearsOfService <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">contractor</span> <span class="op">=</span> ContractEmployee<span class="op">(</span><span class="st">&quot;Bob Smith&quot;</span><span class="op">,</span> <span class="st">&quot;CT001&quot;</span><span class="op">,</span> <span class="fl">50.0</span><span class="op">,</span> <span class="dv">160</span><span class="op">)</span></span>
+<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a>    contractor<span class="op">.</span>yearsOfService <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a>    fullTime<span class="op">.</span>displayInfo<span class="op">()</span></span>
+<span id="cb26-48"><a href="#cb26-48" aria-hidden="true" tabindex="-1"></a>    println<span class="op">()</span></span>
+<span id="cb26-49"><a href="#cb26-49" aria-hidden="true" tabindex="-1"></a>    contractor<span class="op">.</span>displayInfo<span class="op">()</span></span>
+<span id="cb26-50"><a href="#cb26-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb26-51"><a href="#cb26-51" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This would cause an error:</span></span>
+<span id="cb26-52"><a href="#cb26-52" aria-hidden="true" tabindex="-1"></a>    <span class="co">// val emp = Employee(&quot;Test&quot;, &quot;T001&quot;)  // ERROR: Cannot instantiate abstract class</span></span>
+<span id="cb26-53"><a href="#cb26-53" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Employee: Alice Johnson (ID: FT001)
+Years of service: 3
+Salary: $5000.0
+
+Employee: Bob Smith (ID: CT001)
+Years of service: 1
+Salary: $8000.0</code></pre>
+<h3 id="abstract-class-vs-interface">Abstract Class vs Interface</h3>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Abstract class - can have state and constructors</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="kw">abstract</span> <span class="kw">class</span> DatabaseConnection<span class="op">(</span><span class="kw">val</span> <span class="va">connectionString</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Concrete property with backing field</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">protected</span> <span class="kw">var</span> <span class="va">isConnected</span><span class="op">:</span> <span class="kw">Boolean</span> <span class="op">=</span> <span class="kw">false</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Abstract method</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">abstract</span> <span class="kw">fun</span> <span class="fu">connect</span><span class="op">()</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">abstract</span> <span class="kw">fun</span> <span class="fu">disconnect</span><span class="op">()</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Concrete method</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">getStatus</span><span class="op">():</span> <span class="dt">String</span> <span class="op">{</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="cf">if</span> <span class="op">(</span>isConnected<span class="op">)</span> <span class="st">&quot;Connected&quot;</span> <span class="cf">else</span> <span class="st">&quot;Disconnected&quot;</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co">// Interface - no state or constructors</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> Queryable <span class="op">{</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">executeQuery</span><span class="op">(</span><span class="va">query</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">List</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="co">// Class can inherit ONE abstract class and MULTIPLE interfaces</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="fu">MySQLConnection</span><span class="op">(</span><span class="va">connectionString</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">:</span> <span class="dt">DatabaseConnection</span><span class="op">(</span><span class="va">connectionString</span><span class="op">)</span>, <span class="fu">Queryable</span> <span class="op">{</span></span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">connect</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Connecting to MySQL: </span><span class="ss">$connectionString</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>        isConnected <span class="op">=</span> <span class="kw">true</span></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">disconnect</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Disconnecting from MySQL&quot;</span><span class="op">)</span></span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>        isConnected <span class="op">=</span> <span class="kw">false</span></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">executeQuery</span><span class="op">(</span><span class="va">query</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">List</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>isConnected<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Error: Not connected to database&quot;</span><span class="op">)</span></span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> emptyList<span class="op">()</span></span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Executing query: </span><span class="ss">$query</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> listOf<span class="op">(</span><span class="st">&quot;Result 1&quot;</span><span class="op">,</span> <span class="st">&quot;Result 2&quot;</span><span class="op">,</span> <span class="st">&quot;Result 3&quot;</span><span class="op">)</span></span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">db</span> <span class="op">=</span> MySQLConnection<span class="op">(</span><span class="st">&quot;localhost:3306/mydb&quot;</span><span class="op">)</span></span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Status: </span><span class="ss">${</span>db<span class="op">.</span>getStatus<span class="op">()</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>    db<span class="op">.</span>connect<span class="op">()</span></span>
+<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Status: </span><span class="ss">${</span>db<span class="op">.</span>getStatus<span class="op">()</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">results</span> <span class="op">=</span> db<span class="op">.</span>executeQuery<span class="op">(</span><span class="st">&quot;SELECT * FROM users&quot;</span><span class="op">)</span></span>
+<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Results: </span><span class="ss">$results</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb28-54"><a href="#cb28-54" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb28-55"><a href="#cb28-55" aria-hidden="true" tabindex="-1"></a>    db<span class="op">.</span>disconnect<span class="op">()</span></span>
+<span id="cb28-56"><a href="#cb28-56" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Status: </span><span class="ss">${</span>db<span class="op">.</span>getStatus<span class="op">()</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb28-57"><a href="#cb28-57" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Status: Disconnected
+Connecting to MySQL: localhost:3306/mydb
+Status: Connected
+Executing query: SELECT * FROM users
+Results: [Result 1, Result 2, Result 3]
+Disconnecting from MySQL
+Status: Disconnected</code></pre>
+<h3 id="when-to-use-each">When to Use Each?</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                    ABSTRACT CLASS                            │
+├─────────────────────────────────────────────────────────────┤
+│ ✓ Need state (fields with backing storage)                  │
+│ ✓ Need constructors                                          │
+│ ✓ Need to share common implementation                        │
+│ ✓ Modeling &quot;is-a&quot; relationship                               │
+│ ✓ Single inheritance hierarchy                               │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│                      INTERFACE                               │
+├─────────────────────────────────────────────────────────────┤
+│ ✓ Defining a contract/capability                            │
+│ ✓ Need multiple inheritance                                  │
+│ ✓ Unrelated classes share behavior                          │
+│ ✓ Modeling &quot;can-do&quot; relationship                             │
+│ ✓ No state needed                                            │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="section-7-single-responsibility-principle">Section 7: Single
+Responsibility Principle</h2>
+<h3 id="the-principle">The Principle</h3>
+<p><strong>“A class should have only one reason to change”</strong></p>
+<p>This means each class should have a <strong>single
+responsibility</strong> or job. If a class has multiple
+responsibilities, changes to one responsibility might affect the
+other.</p>
+<h3 id="bad-example-multiple-responsibilities">Bad Example: Multiple
+Responsibilities</h3>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">// BAD: This class has TOO MANY responsibilities</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Employee <span class="op">{</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">name</span><span class="op">:</span> <span class="kw">String</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">id</span><span class="op">:</span> <span class="kw">String</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">salary</span><span class="op">:</span> <span class="kw">Double</span> <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Responsibility 1: Calculate pay</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">calculatePay</span><span class="op">():</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> salary <span class="op">*</span> <span class="fl">1.1</span>  <span class="co">// With 10% bonus</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Responsibility 2: Database operations</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">saveToDatabase</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Saving employee to database...&quot;</span><span class="op">)</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Database logic here</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Responsibility 3: Report generation</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">generateReport</span><span class="op">():</span> <span class="dt">String</span> <span class="op">{</span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="st">&quot;&quot;&quot;</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a><span class="st">            Employee Report</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a><span class="st">            Name: </span><span class="ss">$name</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a><span class="st">            ID: </span><span class="ss">$id</span></span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a><span class="st">            Salary: </span><span class="ss">$salary</span></span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a><span class="st">        &quot;&quot;&quot;</span><span class="op">.</span>trimIndent<span class="op">()</span></span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a><span class="co">// Multiple reasons to change:</span></span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a><span class="co">// 1. Pay calculation logic changes</span></span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a><span class="co">// 2. Database technology changes</span></span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a><span class="co">// 3. Report format changes</span></span></code></pre></div>
+<h3 id="good-example-single-responsibilities">Good Example: Single
+Responsibilities</h3>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">// GOOD: Each class has ONE responsibility</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Responsibility: Hold employee data</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> Employee<span class="op">(</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">id</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">salary</span><span class="op">:</span> <span class="dt">Double</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co">// Responsibility: Calculate payroll</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PayrollCalculator <span class="op">{</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">calculatePay</span><span class="op">(</span><span class="va">employee</span><span class="op">:</span> <span class="dt">Employee</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> employee<span class="op">.</span>salary <span class="op">*</span> <span class="fl">1.1</span>  <span class="co">// With 10% bonus</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="co">// Responsibility: Database operations</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EmployeeRepository <span class="op">{</span></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">save</span><span class="op">(</span><span class="va">employee</span><span class="op">:</span> <span class="dt">Employee</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Saving </span><span class="ss">${</span>employee<span class="op">.</span>name<span class="ss">}</span><span class="st"> to database...&quot;</span><span class="op">)</span></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Database logic here</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">findById</span><span class="op">(</span><span class="va">id</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">Employee</span><span class="op">?</span> <span class="op">{</span></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Finding employee with ID: </span><span class="ss">$id</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Database query logic</span></span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">null</span></span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a><span class="co">// Responsibility: Generate reports</span></span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ReportGenerator <span class="op">{</span></span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">generateEmployeeReport</span><span class="op">(</span><span class="va">employee</span><span class="op">:</span> <span class="dt">Employee</span><span class="op">):</span> <span class="dt">String</span> <span class="op">{</span></span>
+<span id="cb32-34"><a href="#cb32-34" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="st">&quot;&quot;&quot;</span></span>
+<span id="cb32-35"><a href="#cb32-35" aria-hidden="true" tabindex="-1"></a><span class="st">            ═══════════════════════════</span></span>
+<span id="cb32-36"><a href="#cb32-36" aria-hidden="true" tabindex="-1"></a><span class="st">            Employee Report</span></span>
+<span id="cb32-37"><a href="#cb32-37" aria-hidden="true" tabindex="-1"></a><span class="st">            ═══════════════════════════</span></span>
+<span id="cb32-38"><a href="#cb32-38" aria-hidden="true" tabindex="-1"></a><span class="st">            Name: </span><span class="ss">${</span>employee<span class="op">.</span>name<span class="ss">}</span></span>
+<span id="cb32-39"><a href="#cb32-39" aria-hidden="true" tabindex="-1"></a><span class="st">            ID: </span><span class="ss">${</span>employee<span class="op">.</span>id<span class="ss">}</span></span>
+<span id="cb32-40"><a href="#cb32-40" aria-hidden="true" tabindex="-1"></a><span class="st">            Salary: </span><span class="ss">$${</span>employee<span class="op">.</span>salary<span class="ss">}</span></span>
+<span id="cb32-41"><a href="#cb32-41" aria-hidden="true" tabindex="-1"></a><span class="st">        &quot;&quot;&quot;</span><span class="op">.</span>trimIndent<span class="op">()</span></span>
+<span id="cb32-42"><a href="#cb32-42" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb32-43"><a href="#cb32-43" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb32-44"><a href="#cb32-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-45"><a href="#cb32-45" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb32-46"><a href="#cb32-46" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">employee</span> <span class="op">=</span> Employee<span class="op">(</span><span class="st">&quot;Alice Johnson&quot;</span><span class="op">,</span> <span class="st">&quot;E001&quot;</span><span class="op">,</span> <span class="fl">50000.0</span><span class="op">)</span></span>
+<span id="cb32-47"><a href="#cb32-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-48"><a href="#cb32-48" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">payroll</span> <span class="op">=</span> PayrollCalculator<span class="op">()</span></span>
+<span id="cb32-49"><a href="#cb32-49" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">repository</span> <span class="op">=</span> EmployeeRepository<span class="op">()</span></span>
+<span id="cb32-50"><a href="#cb32-50" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">reportGen</span> <span class="op">=</span> ReportGenerator<span class="op">()</span></span>
+<span id="cb32-51"><a href="#cb32-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-52"><a href="#cb32-52" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Monthly pay: </span><span class="ss">$${</span>payroll<span class="op">.</span>calculatePay<span class="op">(</span>employee<span class="op">)</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb32-53"><a href="#cb32-53" aria-hidden="true" tabindex="-1"></a>    repository<span class="op">.</span>save<span class="op">(</span>employee<span class="op">)</span></span>
+<span id="cb32-54"><a href="#cb32-54" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span>reportGen<span class="op">.</span>generateEmployeeReport<span class="op">(</span>employee<span class="op">))</span></span>
+<span id="cb32-55"><a href="#cb32-55" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Monthly pay: $55000.0
+Saving Alice Johnson to database...
+═══════════════════════════
+Employee Report
+═══════════════════════════
+Name: Alice Johnson
+ID: E001
+Salary: $50000.0</code></pre>
+<p><strong>Benefits:</strong> - Each class can change independently -
+Easier to test - Easier to understand - More maintainable</p>
+<hr />
+<h2
+id="section-8-object-composition-and-whole-part-relationships">Section
+8: Object Composition and Whole-Part Relationships</h2>
+<h3 id="the-concept">The Concept</h3>
+<p>Objects can <strong>contain other objects</strong>. This creates
+whole-part relationships where complex objects are built from simpler
+ones.</p>
+<h3 id="two-types-of-relationships">Two Types of Relationships</h3>
+<h4 id="aggregation-has-a-usage">1. Aggregation (Has-a / Usage)</h4>
+<ul>
+<li>Parts exist <strong>independently</strong> of the whole</li>
+<li>Parts can be <strong>shared</strong></li>
+<li>Destroying the whole does NOT destroy the parts</li>
+</ul>
+<h4 id="composition-must-have-ownership">2. Composition (Must-have /
+Ownership)</h4>
+<ul>
+<li>Parts have <strong>no meaning</strong> without the whole</li>
+<li>Parts are NOT shared</li>
+<li><strong>Lifetime dependency</strong>: Destroying the whole destroys
+the parts</li>
+</ul>
+<h3 id="visual-representation-1">Visual Representation</h3>
+<pre><code>AGGREGATION                       COMPOSITION
+(Has-a)                          (Must-have)
+
+   ┌──────┐                         ┌──────┐
+   │  Car │◇────── Passengers       │  Car │◆────── Engine
+   └──────┘                         └──────┘
+      │                                │
+      │ Uses                           │ Owns
+      ▼                                ▼
+  ┌─────────┐                      ┌────────┐
+  │Passenger│                      │ Engine │
+  │ (exists │                      │(depends│
+  │indepen- │                      │   on   │
+  │ dently) │                      │  Car)  │
+  └─────────┘                      └────────┘</code></pre>
+<h3 id="code-example">Code Example</h3>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">// AGGREGATION Example: Passengers in a Car</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Passenger<span class="op">(</span><span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="kw">val</span> <span class="va">seatNumber</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">boardVehicle</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="ss">$name</span><span class="st"> is boarding (Seat </span><span class="ss">$seatNumber</span><span class="st">)&quot;</span><span class="op">)</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Car<span class="op">(</span><span class="kw">val</span> <span class="va">model</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Aggregation: Car HAS passengers, but doesn&#39;t own them</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">passengers</span> <span class="op">=</span> mutableListOf<span class="op">&lt;</span>Passenger<span class="op">&gt;()</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">addPassenger</span><span class="op">(</span><span class="va">passenger</span><span class="op">:</span> <span class="dt">Passenger</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>        passengers<span class="op">.</span>add<span class="op">(</span>passenger<span class="op">)</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>        passenger<span class="op">.</span>boardVehicle<span class="op">()</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">displayPassengers</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="ss">$model</span><span class="st"> passengers:&quot;</span><span class="op">)</span></span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>        passengers<span class="op">.</span>forEach <span class="op">{</span> println<span class="op">(</span><span class="st">&quot;  - </span><span class="ss">${</span>it<span class="op">.</span>name<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span> <span class="op">}</span></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a><span class="co">// COMPOSITION Example: Engine in a Car</span></span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Engine<span class="op">(</span><span class="kw">private</span> <span class="kw">val</span> <span class="va">type</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="kw">private</span> <span class="kw">val</span> <span class="va">horsepower</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">start</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="ss">$type</span><span class="st"> engine (</span><span class="ss">$horsepower</span><span class="st"> HP) starting...&quot;</span><span class="op">)</span></span>
+<span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">stop</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb35-32"><a href="#cb35-32" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Engine stopping...&quot;</span><span class="op">)</span></span>
+<span id="cb35-33"><a href="#cb35-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb35-34"><a href="#cb35-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-35"><a href="#cb35-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-36"><a href="#cb35-36" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Vehicle<span class="op">(</span><span class="kw">val</span> <span class="va">brand</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">engineType</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">engineHP</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb35-37"><a href="#cb35-37" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Composition: Vehicle OWNS the engine</span></span>
+<span id="cb35-38"><a href="#cb35-38" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Engine is created with the vehicle and destroyed with it</span></span>
+<span id="cb35-39"><a href="#cb35-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">engine</span> <span class="op">=</span> Engine<span class="op">(</span>engineType<span class="op">,</span> engineHP<span class="op">)</span></span>
+<span id="cb35-40"><a href="#cb35-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb35-41"><a href="#cb35-41" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">start</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb35-42"><a href="#cb35-42" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="ss">$brand</span><span class="st"> starting...&quot;</span><span class="op">)</span></span>
+<span id="cb35-43"><a href="#cb35-43" aria-hidden="true" tabindex="-1"></a>        engine<span class="op">.</span>start<span class="op">()</span></span>
+<span id="cb35-44"><a href="#cb35-44" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb35-45"><a href="#cb35-45" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb35-46"><a href="#cb35-46" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">stop</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb35-47"><a href="#cb35-47" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="ss">$brand</span><span class="st"> stopping...&quot;</span><span class="op">)</span></span>
+<span id="cb35-48"><a href="#cb35-48" aria-hidden="true" tabindex="-1"></a>        engine<span class="op">.</span>stop<span class="op">()</span></span>
+<span id="cb35-49"><a href="#cb35-49" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb35-50"><a href="#cb35-50" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb35-51"><a href="#cb35-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-52"><a href="#cb35-52" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb35-53"><a href="#cb35-53" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;=== AGGREGATION EXAMPLE ===&quot;</span><span class="op">)</span></span>
+<span id="cb35-54"><a href="#cb35-54" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Passengers exist independently</span></span>
+<span id="cb35-55"><a href="#cb35-55" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">alice</span> <span class="op">=</span> Passenger<span class="op">(</span><span class="st">&quot;Alice&quot;</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb35-56"><a href="#cb35-56" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">bob</span> <span class="op">=</span> Passenger<span class="op">(</span><span class="st">&quot;Bob&quot;</span><span class="op">,</span> <span class="dv">2</span><span class="op">)</span></span>
+<span id="cb35-57"><a href="#cb35-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb35-58"><a href="#cb35-58" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">car1</span> <span class="op">=</span> Car<span class="op">(</span><span class="st">&quot;Toyota Camry&quot;</span><span class="op">)</span></span>
+<span id="cb35-59"><a href="#cb35-59" aria-hidden="true" tabindex="-1"></a>    car1<span class="op">.</span>addPassenger<span class="op">(</span>alice<span class="op">)</span></span>
+<span id="cb35-60"><a href="#cb35-60" aria-hidden="true" tabindex="-1"></a>    car1<span class="op">.</span>addPassenger<span class="op">(</span>bob<span class="op">)</span></span>
+<span id="cb35-61"><a href="#cb35-61" aria-hidden="true" tabindex="-1"></a>    car1<span class="op">.</span>displayPassengers<span class="op">()</span></span>
+<span id="cb35-62"><a href="#cb35-62" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb35-63"><a href="#cb35-63" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Passengers can switch cars</span></span>
+<span id="cb35-64"><a href="#cb35-64" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">car2</span> <span class="op">=</span> Car<span class="op">(</span><span class="st">&quot;Honda Accord&quot;</span><span class="op">)</span></span>
+<span id="cb35-65"><a href="#cb35-65" aria-hidden="true" tabindex="-1"></a>    car2<span class="op">.</span>addPassenger<span class="op">(</span>alice<span class="op">)</span>  <span class="co">// Alice can be in different car</span></span>
+<span id="cb35-66"><a href="#cb35-66" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb35-67"><a href="#cb35-67" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== COMPOSITION EXAMPLE ===&quot;</span><span class="op">)</span></span>
+<span id="cb35-68"><a href="#cb35-68" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">vehicle</span> <span class="op">=</span> Vehicle<span class="op">(</span><span class="st">&quot;Tesla Model 3&quot;</span><span class="op">,</span> <span class="st">&quot;Electric&quot;</span><span class="op">,</span> <span class="dv">283</span><span class="op">)</span></span>
+<span id="cb35-69"><a href="#cb35-69" aria-hidden="true" tabindex="-1"></a>    vehicle<span class="op">.</span>start<span class="op">()</span></span>
+<span id="cb35-70"><a href="#cb35-70" aria-hidden="true" tabindex="-1"></a>    vehicle<span class="op">.</span>stop<span class="op">()</span></span>
+<span id="cb35-71"><a href="#cb35-71" aria-hidden="true" tabindex="-1"></a>    <span class="co">// When vehicle is destroyed, its engine is also destroyed</span></span>
+<span id="cb35-72"><a href="#cb35-72" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>=== AGGREGATION EXAMPLE ===
+Alice is boarding (Seat 1)
+Bob is boarding (Seat 2)
+Toyota Camry passengers:
+  - Alice
+  - Bob
+Alice is boarding (Seat 1)
+
+=== COMPOSITION EXAMPLE ===
+Tesla Model 3 starting...
+Electric engine (283 HP) starting...
+Tesla Model 3 stopping...
+Engine stopping...</code></pre>
+<h3 id="practical-example-address">Practical Example: Address</h3>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Address exists independently - AGGREGATION</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> Address<span class="op">(</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">street</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">city</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">postalCode</span><span class="op">:</span> <span class="dt">String</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Contract exists only for employee - COMPOSITION</span></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> Contract<span class="op">(</span></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">startDate</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">position</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">salary</span><span class="op">:</span> <span class="dt">Double</span></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Employee<span class="op">(</span></span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">address</span><span class="op">:</span> <span class="dt">Address</span><span class="op">,</span>  <span class="co">// Aggregation: address exists independently</span></span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Composition: contracts are owned by employee</span></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">contracts</span> <span class="op">=</span> mutableListOf<span class="op">&lt;</span>Contract<span class="op">&gt;()</span></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">addContract</span><span class="op">(</span><span class="va">contract</span><span class="op">:</span> <span class="dt">Contract</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>        contracts<span class="op">.</span>add<span class="op">(</span>contract<span class="op">)</span></span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">displayInfo</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Employee: </span><span class="ss">$name</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Address: </span><span class="ss">${</span>address<span class="op">.</span>street<span class="ss">}</span><span class="st">, </span><span class="ss">${</span>address<span class="op">.</span>city<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Contracts:&quot;</span><span class="op">)</span></span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a>        contracts<span class="op">.</span>forEach <span class="op">{</span></span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;  - </span><span class="ss">${</span>it<span class="op">.</span>position<span class="ss">}</span><span class="st">: </span><span class="ss">$${</span>it<span class="op">.</span>salary<span class="ss">}</span><span class="st"> (from </span><span class="ss">${</span>it<span class="op">.</span>startDate<span class="ss">}</span><span class="st">)&quot;</span><span class="op">)</span></span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb37-37"><a href="#cb37-37" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">address</span> <span class="op">=</span> Address<span class="op">(</span><span class="st">&quot;123 Main St&quot;</span><span class="op">,</span> <span class="st">&quot;London&quot;</span><span class="op">,</span> <span class="st">&quot;SW1A 1AA&quot;</span><span class="op">)</span></span>
+<span id="cb37-38"><a href="#cb37-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb37-39"><a href="#cb37-39" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Multiple employees can share the same address</span></span>
+<span id="cb37-40"><a href="#cb37-40" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">emp1</span> <span class="op">=</span> Employee<span class="op">(</span><span class="st">&quot;John Doe&quot;</span><span class="op">,</span> address<span class="op">)</span></span>
+<span id="cb37-41"><a href="#cb37-41" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">emp2</span> <span class="op">=</span> Employee<span class="op">(</span><span class="st">&quot;Jane Smith&quot;</span><span class="op">,</span> address<span class="op">)</span>  <span class="co">// Same address object</span></span>
+<span id="cb37-42"><a href="#cb37-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb37-43"><a href="#cb37-43" aria-hidden="true" tabindex="-1"></a>    emp1<span class="op">.</span>addContract<span class="op">(</span>Contract<span class="op">(</span><span class="st">&quot;2020-01-01&quot;</span><span class="op">,</span> <span class="st">&quot;Junior Developer&quot;</span><span class="op">,</span> <span class="fl">40000.0</span><span class="op">))</span></span>
+<span id="cb37-44"><a href="#cb37-44" aria-hidden="true" tabindex="-1"></a>    emp1<span class="op">.</span>addContract<span class="op">(</span>Contract<span class="op">(</span><span class="st">&quot;2022-01-01&quot;</span><span class="op">,</span> <span class="st">&quot;Senior Developer&quot;</span><span class="op">,</span> <span class="fl">60000.0</span><span class="op">))</span></span>
+<span id="cb37-45"><a href="#cb37-45" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb37-46"><a href="#cb37-46" aria-hidden="true" tabindex="-1"></a>    emp1<span class="op">.</span>displayInfo<span class="op">()</span></span>
+<span id="cb37-47"><a href="#cb37-47" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Employee: John Doe
+Address: 123 Main St, London
+Contracts:
+  - Junior Developer: $40000.0 (from 2020-01-01)
+  - Senior Developer: $60000.0 (from 2022-01-01)</code></pre>
+<hr />
+<h2 id="section-9-liskov-substitution-principle-lsp">Section 9: Liskov
+Substitution Principle (LSP)</h2>
+<h3 id="the-principle-1">The Principle</h3>
+<p><strong>“If S is a subtype of T, then objects of type T may be
+replaced by objects of type S without altering the correctness of the
+program”</strong></p>
+<p>Or more simply: <strong>“Subtypes must be substitutable for their
+base types”</strong></p>
+<h3 id="what-this-means">What This Means</h3>
+<p>If you have a function that accepts a <code>Vehicle</code>, it should
+work correctly with ANY subtype of <code>Vehicle</code> (like
+<code>Car</code>, <code>Truck</code>, <code>Motorcycle</code>) without
+needing to know which specific type it is.</p>
+<p><strong>The behavior must remain consistent!</strong></p>
+<h3 id="lsp-in-action-correct-example">LSP in Action: Correct
+Example</h3>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">class</span> Bird<span class="op">(</span><span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">move</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="ss">$name</span><span class="st"> is moving&quot;</span><span class="op">)</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Sparrow<span class="op">(</span><span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Bird</span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">move</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="ss">$name</span><span class="st"> is flying&quot;</span><span class="op">)</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Penguin<span class="op">(</span><span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Bird</span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">move</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="ss">$name</span><span class="st"> is waddling&quot;</span><span class="op">)</span></span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a><span class="co">// This function expects a Bird and works with ANY Bird subtype</span></span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">makeB</span>​<span class="fu">irdMove</span><span class="op">(</span><span class="va">bird</span><span class="op">:</span> <span class="dt">Bird</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>    bird<span class="op">.</span>move<span class="op">()</span>  <span class="co">// Works correctly for any Bird subtype</span></span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">sparrow</span> <span class="op">=</span> Sparrow<span class="op">(</span><span class="st">&quot;Tweety&quot;</span><span class="op">)</span></span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">penguin</span> <span class="op">=</span> Penguin<span class="op">(</span><span class="st">&quot;Pingu&quot;</span><span class="op">)</span></span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">// LSP: Both subtypes can substitute the base type</span></span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>    makeBirdMove<span class="op">(</span>sparrow<span class="op">)</span>  <span class="co">// Works!</span></span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>    makeBirdMove<span class="op">(</span>penguin<span class="op">)</span>  <span class="co">// Works!</span></span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">// We can use Bird type for any subtype</span></span>
+<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">birds</span><span class="op">:</span> List<span class="op">&lt;</span>Bird<span class="op">&gt;</span> <span class="op">=</span> listOf<span class="op">(</span>sparrow<span class="op">,</span> penguin<span class="op">)</span></span>
+<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a>    birds<span class="op">.</span>forEach <span class="op">{</span> it<span class="op">.</span>move<span class="op">()</span> <span class="op">}</span></span>
+<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Tweety is flying
+Pingu is waddling
+Tweety is flying
+Pingu is waddling</code></pre>
+<h3 id="lsp-violation-bad-example">LSP Violation: Bad Example</h3>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">// BAD EXAMPLE: Violates LSP</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="kw">open</span> <span class="kw">class</span> Rectangle<span class="op">(</span><span class="kw">open</span> <span class="kw">val</span> <span class="va">width</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">open</span> <span class="kw">val</span> <span class="va">height</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">area</span><span class="op">():</span> <span class="dt">Double</span> <span class="op">=</span> width <span class="op">*</span> height</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">open</span> <span class="kw">fun</span> <span class="fu">setDimensions</span><span class="op">(</span><span class="va">w</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="va">h</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Setting rectangle: width=</span><span class="ss">$w</span><span class="st">, height=</span><span class="ss">$h</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="co">// Square violates LSP because it changes behavior</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Square<span class="op">(</span><span class="va">size</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Rectangle</span><span class="op">(</span><span class="va">size</span><span class="op">,</span> <span class="va">size</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">var</span> <span class="va">width</span><span class="op">:</span> <span class="kw">Double</span> <span class="op">=</span> size</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span><span class="op">(</span>value<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>            field <span class="op">=</span> value</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>            height <span class="op">=</span> value  <span class="co">// Forces height to change!</span></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">var</span> <span class="va">height</span><span class="op">:</span> <span class="kw">Double</span> <span class="op">=</span> size</span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span><span class="op">(</span>value<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a>            field <span class="op">=</span> value</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>            width <span class="op">=</span> value  <span class="co">// Forces width to change!</span></span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">setDimensions</span><span class="op">(</span><span class="va">w</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="va">h</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Violates expected behavior: can&#39;t set different dimensions</span></span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">size</span> <span class="op">=</span> maxOf<span class="op">(</span>w<span class="op">,</span> h<span class="op">)</span></span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a>        width <span class="op">=</span> size</span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a>        height <span class="op">=</span> size</span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Setting square: size=</span><span class="ss">$size</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a><span class="co">// This function expects Rectangle behavior</span></span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">processRectangle</span><span class="op">(</span><span class="va">rect</span><span class="op">:</span> <span class="dt">Rectangle</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Processing rectangle:&quot;</span><span class="op">)</span></span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a>    rect<span class="op">.</span>setDimensions<span class="op">(</span><span class="fl">4.0</span><span class="op">,</span> <span class="fl">5.0</span><span class="op">)</span></span>
+<span id="cb41-38"><a href="#cb41-38" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Expected area for 4x5: 20.0&quot;</span><span class="op">)</span></span>
+<span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Actual area: </span><span class="ss">${</span>rect<span class="op">.</span>area<span class="op">()</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb41-41"><a href="#cb41-41" aria-hidden="true" tabindex="-1"></a>    <span class="co">// With Rectangle: area = 20.0 ✓</span></span>
+<span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a>    <span class="co">// With Square: area = 25.0 ✗ (VIOLATION!)</span></span>
+<span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-45"><a href="#cb41-45" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb41-46"><a href="#cb41-46" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">rectangle</span> <span class="op">=</span> Rectangle<span class="op">(</span><span class="fl">0.0</span><span class="op">,</span> <span class="fl">0.0</span><span class="op">)</span></span>
+<span id="cb41-47"><a href="#cb41-47" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">square</span> <span class="op">=</span> Square<span class="op">(</span><span class="fl">0.0</span><span class="op">)</span></span>
+<span id="cb41-48"><a href="#cb41-48" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb41-49"><a href="#cb41-49" aria-hidden="true" tabindex="-1"></a>    processRectangle<span class="op">(</span>rectangle<span class="op">)</span>  <span class="co">// Works as expected</span></span>
+<span id="cb41-50"><a href="#cb41-50" aria-hidden="true" tabindex="-1"></a>    processRectangle<span class="op">(</span>square<span class="op">)</span>     <span class="co">// Violates LSP!</span></span>
+<span id="cb41-51"><a href="#cb41-51" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Processing rectangle:
+Setting rectangle: width=4.0, height=5.0
+Expected area for 4x5: 20.0
+Actual area: 20.0
+
+Processing rectangle:
+Setting square: size=5.0
+Expected area for 4x5: 20.0
+Actual area: 25.0</code></pre>
+<p><strong>Problem:</strong> The <code>Square</code> changed the
+expected behavior! Code that works with <code>Rectangle</code> breaks
+with <code>Square</code>.</p>
+<h3 id="common-lsp-violations">Common LSP Violations</h3>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">// VIOLATION: Using type checks</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">processShape</span><span class="op">(</span><span class="va">shape</span><span class="op">:</span> <span class="dt">Shape</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="op">(</span>shape <span class="kw">is</span> Circle<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Special handling for Circle - LSP VIOLATION!</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;This is a circle, handling differently...&quot;</span><span class="op">)</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>shape <span class="kw">is</span> Rectangle<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Special handling for Rectangle - LSP VIOLATION!</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;This is a rectangle, handling differently...&quot;</span><span class="op">)</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// If you need type checks, your hierarchy is likely wrong!</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="correct-lsp-design">Correct LSP Design</h3>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">// CORRECT: Polymorphic behavior without type checks</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="kw">abstract</span> <span class="kw">class</span> Shape <span class="op">{</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">abstract</span> <span class="kw">fun</span> <span class="fu">area</span><span class="op">():</span> <span class="dt">Double</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">abstract</span> <span class="kw">fun</span> <span class="fu">draw</span><span class="op">()</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="fu">Circle</span><span class="op">(</span><span class="kw">private</span> <span class="kw">val</span> <span class="va">radius</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Shape</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">area</span><span class="op">():</span> <span class="dt">Double</span> <span class="op">=</span> Math<span class="op">.</span>PI <span class="op">*</span> radius <span class="op">*</span> radius</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">draw</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Drawing a circle with radius </span><span class="ss">$radius</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Rectangle<span class="op">(</span><span class="kw">private</span> <span class="kw">val</span> <span class="va">width</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="kw">private</span> <span class="kw">val</span> <span class="va">height</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">:</span> <span class="dt">Shape</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">area</span><span class="op">():</span> <span class="dt">Double</span> <span class="op">=</span> width <span class="op">*</span> height</span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">draw</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Drawing a rectangle </span><span class="ss">${</span>width<span class="ss">}</span><span class="st">x</span><span class="ss">$height</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a><span class="co">// This works with ANY Shape without knowing the specific type</span></span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">processShape</span><span class="op">(</span><span class="va">shape</span><span class="op">:</span> <span class="dt">Shape</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a>    shape<span class="op">.</span>draw<span class="op">()</span></span>
+<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Area: </span><span class="ss">${</span>shape<span class="op">.</span>area<span class="op">()</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb44-29"><a href="#cb44-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-30"><a href="#cb44-30" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb44-31"><a href="#cb44-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">shapes</span><span class="op">:</span> List<span class="op">&lt;</span>Shape<span class="op">&gt;</span> <span class="op">=</span> listOf<span class="op">(</span></span>
+<span id="cb44-32"><a href="#cb44-32" aria-hidden="true" tabindex="-1"></a>        Circle<span class="op">(</span><span class="fl">5.0</span><span class="op">),</span></span>
+<span id="cb44-33"><a href="#cb44-33" aria-hidden="true" tabindex="-1"></a>        Rectangle<span class="op">(</span><span class="fl">4.0</span><span class="op">,</span> <span class="fl">6.0</span><span class="op">)</span></span>
+<span id="cb44-34"><a href="#cb44-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb44-35"><a href="#cb44-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb44-36"><a href="#cb44-36" aria-hidden="true" tabindex="-1"></a>    <span class="co">// LSP satisfied: All shapes work identically through base type</span></span>
+<span id="cb44-37"><a href="#cb44-37" aria-hidden="true" tabindex="-1"></a>    shapes<span class="op">.</span>forEach <span class="op">{</span> processShape<span class="op">(</span>it<span class="op">)</span> <span class="op">}</span></span>
+<span id="cb44-38"><a href="#cb44-38" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Output:</strong></p>
+<pre><code>Drawing a circle with radius 5.0
+Area: 78.53981633974483
+Drawing a rectangle 4.0x6.0
+Area: 24.0</code></pre>
+<h3 id="real-world-android-example">Real-World Android Example</h3>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">android</span><span class="op">.</span><span class="im">view</span><span class="op">.</span><span class="im">View</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">android</span><span class="op">.</span><span class="im">widget</span><span class="op">.</span><span class="im">Button</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="im">android</span><span class="op">.</span><span class="im">widget</span><span class="op">.</span><span class="im">TextView</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co">// In Android, the addView() method expects a View</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> MyLayout <span class="op">{</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">views</span> <span class="op">=</span> mutableListOf<span class="op">&lt;</span>View<span class="op">&gt;()</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Accepts View (base type)</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">addView</span><span class="op">(</span><span class="va">view</span><span class="op">:</span> <span class="dt">View</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>        views<span class="op">.</span>add<span class="op">(</span>view<span class="op">)</span></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Added view: </span><span class="ss">${</span>view<span class="op">::</span><span class="kw">class</span>.simpleName}&quot;)</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">layout</span> <span class="op">=</span> MyLayout<span class="op">()</span></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Button inherits from TextView which inherits from View</span></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// LSP allows us to pass Button where View is expected</span></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">// layout.addView(Button())    // Would work in Android</span></span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">// layout.addView(TextView())  // Would work in Android</span></span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This demonstrates LSP: subtypes (Button, TextView) can</span></span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a>    <span class="co">// substitute their base type (View) without issues</span></span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;LSP allows Button to be used where View is expected&quot;</span><span class="op">)</span></span>
+<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;because Button IS-A TextView which IS-A View&quot;</span><span class="op">)</span></span>
+<span id="cb46-30"><a href="#cb46-30" aria-hidden="true" tabindex="-1"></a><span class="ss">}</span></span></code></pre></div>
+<p><strong>Key Takeaway:</strong> Design your class hierarchies so that
+derived classes can be used anywhere the base class is expected without
+breaking functionality!</p>
+<hr />
+<h2 id="time-allocation-summary">Time Allocation Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Topic</th>
+<th>Time</th>
+<th>Learning Outcomes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Introduction</td>
+<td>3 min</td>
+<td>-</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Making Classes Inheritable</td>
+<td>8 min</td>
+<td>LO1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Primary Constructors in Inheritance</td>
+<td>7 min</td>
+<td>LO2</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Overriding Methods</td>
+<td>7 min</td>
+<td>LO3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Interfaces</td>
+<td>8 min</td>
+<td>LO4</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Abstract Classes</td>
+<td>7 min</td>
+<td>LO5</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Single Responsibility Principle</td>
+<td>5 min</td>
+<td>LO6</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Object Composition</td>
+<td>5 min</td>
+<td>LO7</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Liskov Substitution Principle</td>
+<td>5 min</td>
+<td>LO8</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td><strong>55 min</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="further-resources">Further Resources</h2>
+<h3 id="official-documentation">Official Documentation</h3>
+<ul>
+<li><strong>Kotlin Inheritance:</strong>
+https://kotlinlang.org/docs/inheritance.html</li>
+<li><strong>Kotlin Interfaces:</strong>
+https://kotlinlang.org/docs/interfaces.html</li>
+<li><strong>Kotlin Visibility Modifiers:</strong>
+https://kotlinlang.org/docs/visibility-modifiers.html</li>
+</ul>
+<h3 id="books">Books</h3>
+<ul>
+<li><strong>Martin, R.C. (2012).</strong> <em>Agile Software
+Development: Principles, Patterns, and Practices.</em> Upper Saddle
+River, NJ: Pearson. Pages 95-98 &amp; 111-126</li>
+<li><strong>Liskov, B. (1988).</strong> Keynote address-data abstraction
+and hierarchy. <em>ACM Sigplan Notices, 23(5),</em> 17-34.</li>
+<li><strong>Jemerov, D., &amp; Isakova, S. (2017).</strong> <em>Kotlin
+in Action.</em> Manning Publications.</li>
+</ul>
+<h3 id="online-tutorials">Online Tutorials</h3>
+<ul>
+<li><strong>Kotlin by Example - Inheritance:</strong>
+https://play.kotlinlang.org/byExample/01_introduction/07_Inheritance</li>
+<li><strong>Kotlin Koans - Object-Oriented Programming:</strong>
+https://play.kotlinlang.org/koans</li>
+<li><strong>JetBrains Academy - OOP in Kotlin:</strong>
+https://hyperskill.org/tracks/18</li>
+</ul>
+<h3 id="practice-platforms">Practice Platforms</h3>
+<ul>
+<li><strong>Exercism Kotlin Track:</strong>
+https://exercism.org/tracks/kotlin</li>
+<li><strong>HackerRank Kotlin:</strong>
+https://www.hackerrank.com/domains/kotlin</li>
+<li><strong>LeetCode (select Kotlin as language):</strong>
+https://leetcode.com/</li>
+</ul>
+<h3 id="video-resources">Video Resources</h3>
+<ul>
+<li><strong>Kotlin Programming for Beginners - FreeCodeCamp:</strong>
+YouTube</li>
+<li><strong>Kotlin Design Patterns - Coding in Flow:</strong> YouTube
+channel</li>
+</ul>
+<h3 id="design-principles">Design Principles</h3>
+<ul>
+<li><strong>SOLID Principles Explained:</strong>
+https://www.digitalocean.com/community/conceptual_articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design</li>
+<li><strong>Composition vs Inheritance:</strong>
+https://www.thoughtworks.com/insights/blog/composition-vs-inheritance-how-choose</li>
+</ul>
+<hr />
+<p><strong>End of Lecture</strong></p>
+<p>Remember: <strong>Inheritance is powerful but should be used
+thoughtfully.</strong> Always ask yourself: 1. Is there a true “is-a”
+relationship? 2. Does the subtype truly substitute the base type (LSP)?
+3. Could composition solve this better?</p>
+<p>Happy coding! 🚀</p>

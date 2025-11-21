@@ -1,0 +1,206 @@
+<h1 id="lecture-3-kotlin-worksheet">Lecture 3: Kotlin Worksheet</h1>
+<hr />
+<h2 id="part-1-quiz-section">Part 1: Quiz Section</h2>
+<h3 id="question-1-fill-in-the-blanks">Question 1: Fill in the
+Blanks</h3>
+<p>Complete the following paragraph by filling in the blanks with the
+appropriate words from the word bank below.</p>
+<p>In Kotlin, all classes are __________ by default, which means they
+cannot be inherited unless explicitly marked with the __________
+keyword. When a subclass inherits from a superclass with a primary
+constructor, it must __________ the parent constructor directly in the
+class header. Similarly, methods are also final by default and must be
+marked as __________ if you want to allow subclasses to override
+them.</p>
+<p><strong>Word Bank:</strong> <code>call</code>, <code>override</code>,
+<code>final</code>, <code>open</code>, <code>abstract</code>,
+<code>sealed</code></p>
+<hr />
+<h3 id="question-2-fill-in-the-blanks">Question 2: Fill in the
+Blanks</h3>
+<p>Complete the following paragraph by filling in the blanks with the
+appropriate words from the word bank below.</p>
+<p>An __________ class cannot be instantiated directly and may contain
+both abstract and concrete methods. It can also have __________ with
+backing fields and constructors. In contrast, an __________ defines a
+contract without state and a class can implement multiple of them. The
+Single Responsibility Principle states that a class should have only one
+__________ to change.</p>
+<p><strong>Word Bank:</strong> <code>properties</code>,
+<code>reason</code>, <code>interface</code>, <code>abstract</code>,
+<code>method</code>, <code>constructor</code></p>
+<hr />
+<h3 id="question-3-multiple-choice">Question 3: Multiple Choice</h3>
+<p>Which of the following statements about inheritance in Kotlin is
+<strong>correct</strong>?</p>
+<ol type="A">
+<li>A class can inherit from multiple abstract classes
+simultaneously<br />
+</li>
+<li>Interfaces cannot have default method implementations in
+Kotlin<br />
+</li>
+<li>A subclass can override a method without the parent method being
+marked as <code>open</code><br />
+</li>
+<li>If you want to inherit from a class further down the hierarchy,
+intermediate classes must also be marked as <code>open</code></li>
+</ol>
+<hr />
+<h3 id="question-4-multiple-choice">Question 4: Multiple Choice</h3>
+<p>Which of the following scenarios represents a
+<strong>violation</strong> of the Liskov Substitution Principle
+(LSP)?</p>
+<ol type="A">
+<li>A <code>Dog</code> class that overrides the <code>makeSound()</code>
+method from <code>Animal</code> to print “Woof!”<br />
+</li>
+<li>A <code>Square</code> class that inherits from
+<code>Rectangle</code> but forces width and height to always be
+equal<br />
+</li>
+<li>A <code>Circle</code> class that implements the <code>area()</code>
+method from the abstract <code>Shape</code> class<br />
+</li>
+<li>A <code>Penguin</code> class that overrides the <code>move()</code>
+method from <code>Bird</code> to waddle instead of fly</li>
+</ol>
+<hr />
+<h2 id="part-2-task-section">Part 2: Task Section</h2>
+<h3 id="task-1-library-management-system">Task 1: Library Management
+System</h3>
+<p>Create a simple library management system using inheritance and
+interfaces.</p>
+<p><strong>Requirements:</strong> - Create an abstract class
+<code>LibraryItem</code> with properties for <code>title</code> and
+<code>itemId</code> - Create an interface <code>Borrowable</code> with
+methods <code>checkOut()</code> and <code>returnItem()</code> -
+Implement two concrete classes: <code>Book</code> and <code>DVD</code> -
+<code>Book</code> should have an additional property <code>author</code>
+- <code>DVD</code> should have an additional property
+<code>duration</code> (in minutes) - Both should implement the
+<code>Borrowable</code> interface</p>
+<p><strong>Code Scaffolding:</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Define your abstract class here</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">abstract</span> <span class="kw">class</span> LibraryItem<span class="op">(</span><span class="kw">val</span> <span class="va">title</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="kw">val</span> <span class="va">itemId</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Add an abstract method to display item details</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Define your interface here</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> Borrowable <span class="op">{</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Add methods for checkout and return</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">// Implement Book class</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Book<span class="op">(</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Add parameters</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">:</span> <span class="dt">LibraryItem</span><span class="op">(</span><span class="co">/* ... */</span><span class="op">),</span> <span class="dt">Borrowable</span> <span class="op">{</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Implement required methods</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">// Implement DVD class</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DVD<span class="op">(</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Add parameters</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">:</span> <span class="dt">LibraryItem</span><span class="op">(</span><span class="co">/* ... */</span><span class="op">),</span> <span class="dt">Borrowable</span> <span class="op">{</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Implement required methods</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">book</span> <span class="op">=</span> Book<span class="op">(</span><span class="st">&quot;1984&quot;</span><span class="op">,</span> <span class="st">&quot;B001&quot;</span><span class="op">,</span> <span class="st">&quot;George Orwell&quot;</span><span class="op">)</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">dvd</span> <span class="op">=</span> DVD<span class="op">(</span><span class="st">&quot;Inception&quot;</span><span class="op">,</span> <span class="st">&quot;D001&quot;</span><span class="op">,</span> <span class="dv">148</span><span class="op">)</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    book<span class="op">.</span>displayDetails<span class="op">()</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    book<span class="op">.</span>checkOut<span class="op">()</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    book<span class="op">.</span>returnItem<span class="op">()</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    println<span class="op">()</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    dvd<span class="op">.</span>displayDetails<span class="op">()</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    dvd<span class="op">.</span>checkOut<span class="op">()</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    dvd<span class="op">.</span>returnItem<span class="op">()</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Expected Output:</strong></p>
+<pre><code>Book: 1984 (ID: B001)
+Author: George Orwell
+Checking out: 1984
+Returning: 1984
+
+DVD: Inception (ID: D001)
+Duration: 148 minutes
+Checking out: Inception
+Returning: Inception</code></pre>
+<hr />
+<h3 id="task-2-payment-processing-system">Task 2: Payment Processing
+System</h3>
+<p>Create a payment processing system that demonstrates composition and
+polymorphism.</p>
+<p><strong>Requirements:</strong> - Create an interface
+<code>PaymentMethod</code> with a method
+<code>processPayment(amount: Double)</code> - Create classes
+<code>CreditCard</code>, <code>PayPal</code>, and
+<code>BankTransfer</code> that implement <code>PaymentMethod</code> -
+Create a <code>PaymentProcessor</code> class that uses composition to
+hold a <code>PaymentMethod</code> - The <code>PaymentProcessor</code>
+should be able to process payments using any payment method - Each
+payment method should print a specific message when processing</p>
+<p><strong>Code Scaffolding:</strong></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Define PaymentMethod interface</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> PaymentMethod <span class="op">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Add processPayment method</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Implement CreditCard class</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CreditCard<span class="op">(</span><span class="kw">private</span> <span class="kw">val</span> <span class="va">cardNumber</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">:</span> <span class="dt">PaymentMethod</span> <span class="op">{</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">processPayment</span><span class="op">(</span><span class="va">amount</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Implement credit card payment processing</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">// Implement PayPal class</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PayPal<span class="op">(</span><span class="kw">private</span> <span class="kw">val</span> <span class="va">email</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">:</span> <span class="dt">PaymentMethod</span> <span class="op">{</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">processPayment</span><span class="op">(</span><span class="va">amount</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Implement PayPal payment processing</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">// Implement BankTransfer class</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BankTransfer<span class="op">(</span><span class="kw">private</span> <span class="kw">val</span> <span class="va">accountNumber</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">:</span> <span class="dt">PaymentMethod</span> <span class="op">{</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">override</span> <span class="kw">fun</span> <span class="fu">processPayment</span><span class="op">(</span><span class="va">amount</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Implement bank transfer processing</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">// Implement PaymentProcessor using composition</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PaymentProcessor<span class="op">(</span><span class="kw">private</span> <span class="kw">val</span> <span class="va">paymentMethod</span><span class="op">:</span> <span class="dt">PaymentMethod</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">executePayment</span><span class="op">(</span><span class="va">amount</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Process the payment using the composed payment method</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">creditCard</span> <span class="op">=</span> CreditCard<span class="op">(</span><span class="st">&quot;1234-5678-9012-3456&quot;</span><span class="op">)</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">paypal</span> <span class="op">=</span> PayPal<span class="op">(</span><span class="st">&quot;user@example.com&quot;</span><span class="op">)</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">bankTransfer</span> <span class="op">=</span> BankTransfer<span class="op">(</span><span class="st">&quot;ACC123456789&quot;</span><span class="op">)</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">processor1</span> <span class="op">=</span> PaymentProcessor<span class="op">(</span>creditCard<span class="op">)</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    processor1<span class="op">.</span>executePayment<span class="op">(</span><span class="fl">150.00</span><span class="op">)</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">processor2</span> <span class="op">=</span> PaymentProcessor<span class="op">(</span>paypal<span class="op">)</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    processor2<span class="op">.</span>executePayment<span class="op">(</span><span class="fl">75.50</span><span class="op">)</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">processor3</span> <span class="op">=</span> PaymentProcessor<span class="op">(</span>bankTransfer<span class="op">)</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    processor3<span class="op">.</span>executePayment<span class="op">(</span><span class="fl">200.00</span><span class="op">)</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Expected Output:</strong></p>
+<pre><code>Processing payment of $150.0
+Credit Card payment: Charged $150.0 to card ****3456
+
+Processing payment of $75.5
+PayPal payment: Transferred $75.5 from user@example.com
+
+Processing payment of $200.0
+Bank Transfer payment: Transferred $200.0 from account ACC123456789</code></pre>
+<hr />
+<p><strong>End of Worksheet</strong></p>
