@@ -1,0 +1,1137 @@
+<h1 id="code-smells-before-and-after-refactoring-reference">Code Smells:
+Before and After Refactoring Reference</h1>
+<p>This document provides side-by-side comparisons of common code smells
+and their refactored solutions in Kotlin. Each example shows the
+problematic code (BEFORE) and the improved version (AFTER).</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol type="1">
+<li><a href="#1-duplicated-code">Duplicated Code</a></li>
+<li><a href="#2-long-method">Long Method</a></li>
+<li><a href="#3-large-class">Large Class</a></li>
+<li><a href="#4-long-parameter-list">Long Parameter List</a></li>
+<li><a href="#5-temporary-field">Temporary Field</a></li>
+<li><a href="#6-data-class">Data Class</a></li>
+</ol>
+<hr />
+<h2 id="duplicated-code">1. Duplicated Code</h2>
+<h3 id="the-problem">The Problem</h3>
+<p>The same validation logic is repeated in multiple methods, making
+maintenance difficult and error-prone.</p>
+<h3 id="before-duplicated-validation-code">BEFORE: Duplicated validation
+code</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * BEFORE: Duplicated validation code</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * The validation logic appears in both registerUser and updateUser methods</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UserRegistrationBefore <span class="op">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Duplicated validation in register method</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">registerUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">email</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">password</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">Boolean</span> <span class="op">{</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Validate username</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>username<span class="op">.</span>length <span class="op">&lt;</span> <span class="dv">3</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Username too short&quot;</span><span class="op">)</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>username<span class="op">.</span>length <span class="op">&gt;</span> <span class="dv">20</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Username too long&quot;</span><span class="op">)</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Validate email</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>email<span class="op">.</span>contains<span class="op">(</span><span class="st">&quot;@&quot;</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Invalid email&quot;</span><span class="op">)</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;User registered: </span><span class="ss">$username</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">true</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Same validation duplicated in update method</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">updateUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">email</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">Boolean</span> <span class="op">{</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Validate username (DUPLICATED!)</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>username<span class="op">.</span>length <span class="op">&lt;</span> <span class="dv">3</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Username too short&quot;</span><span class="op">)</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>username<span class="op">.</span>length <span class="op">&gt;</span> <span class="dv">20</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Username too long&quot;</span><span class="op">)</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Validate email (DUPLICATED!)</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>email<span class="op">.</span>contains<span class="op">(</span><span class="st">&quot;@&quot;</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Invalid email&quot;</span><span class="op">)</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;User updated: </span><span class="ss">$username</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">true</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">registration</span> <span class="op">=</span> UserRegistrationBefore<span class="op">()</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Test registration</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>    registration<span class="op">.</span>registerUser<span class="op">(</span><span class="st">&quot;ab&quot;</span><span class="op">,</span> <span class="st">&quot;test@email.com&quot;</span><span class="op">,</span> <span class="st">&quot;pass123&quot;</span><span class="op">)</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    registration<span class="op">.</span>registerUser<span class="op">(</span><span class="st">&quot;validuser&quot;</span><span class="op">,</span> <span class="st">&quot;test@email.com&quot;</span><span class="op">,</span> <span class="st">&quot;pass123&quot;</span><span class="op">)</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Test update</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    registration<span class="op">.</span>updateUser<span class="op">(</span><span class="st">&quot;ab&quot;</span><span class="op">,</span> <span class="st">&quot;newemail@test.com&quot;</span><span class="op">)</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>    registration<span class="op">.</span>updateUser<span class="op">(</span><span class="st">&quot;validuser&quot;</span><span class="op">,</span> <span class="st">&quot;newemail@test.com&quot;</span><span class="op">)</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="after-validation-extracted-into-separate-methods">AFTER:
+Validation extracted into separate methods</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * AFTER: Validation extracted into reusable methods</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * Using Extract Method refactoring to eliminate duplication</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UserRegistrationAfter <span class="op">{</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Extracted method for username validation</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">isValidUsername</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">Boolean</span> <span class="op">{</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>username<span class="op">.</span>length <span class="op">&lt;</span> <span class="dv">3</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Username too short&quot;</span><span class="op">)</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>username<span class="op">.</span>length <span class="op">&gt;</span> <span class="dv">20</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Username too long&quot;</span><span class="op">)</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">true</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Extracted method for email validation</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">isValidEmail</span><span class="op">(</span><span class="va">email</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">Boolean</span> <span class="op">{</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>email<span class="op">.</span>contains<span class="op">(</span><span class="st">&quot;@&quot;</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Invalid email&quot;</span><span class="op">)</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">true</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Now the methods are much simpler and reuse validation logic</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">registerUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">email</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">password</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">Boolean</span> <span class="op">{</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>isValidUsername<span class="op">(</span>username<span class="op">))</span> <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>isValidEmail<span class="op">(</span>email<span class="op">))</span> <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;User registered: </span><span class="ss">$username</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">true</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">updateUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">email</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">Boolean</span> <span class="op">{</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>isValidUsername<span class="op">(</span>username<span class="op">))</span> <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>isValidEmail<span class="op">(</span>email<span class="op">))</span> <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;User updated: </span><span class="ss">$username</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">true</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">registration</span> <span class="op">=</span> UserRegistrationAfter<span class="op">()</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Test registration</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    registration<span class="op">.</span>registerUser<span class="op">(</span><span class="st">&quot;ab&quot;</span><span class="op">,</span> <span class="st">&quot;test@email.com&quot;</span><span class="op">,</span> <span class="st">&quot;pass123&quot;</span><span class="op">)</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    registration<span class="op">.</span>registerUser<span class="op">(</span><span class="st">&quot;validuser&quot;</span><span class="op">,</span> <span class="st">&quot;test@email.com&quot;</span><span class="op">,</span> <span class="st">&quot;pass123&quot;</span><span class="op">)</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Test update</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    registration<span class="op">.</span>updateUser<span class="op">(</span><span class="st">&quot;ab&quot;</span><span class="op">,</span> <span class="st">&quot;newemail@test.com&quot;</span><span class="op">)</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    registration<span class="op">.</span>updateUser<span class="op">(</span><span class="st">&quot;validuser&quot;</span><span class="op">,</span> <span class="st">&quot;newemail@test.com&quot;</span><span class="op">)</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="what-changed">What Changed</h3>
+<ul>
+<li>✅ Validation logic extracted into <code>isValidUsername()</code>
+and <code>isValidEmail()</code> methods</li>
+<li>✅ Both methods now call the same validation functions</li>
+<li>✅ Changes to validation rules only need to be made in one
+place</li>
+<li>✅ Code is more maintainable and less error-prone</li>
+</ul>
+<hr />
+<h2 id="long-method">2. Long Method</h2>
+<h3 id="the-problem-1">The Problem</h3>
+<p>A single method that does too many things: parsing, validation,
+calculation, and formatting. This makes it hard to understand, test, and
+maintain.</p>
+<h3 id="before-one-long-method-doing-everything">BEFORE: One long method
+doing everything</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * BEFORE: Long method that does too many things</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * This method handles parsing, validation, calculation, and formatting</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> OrderProcessorBefore <span class="op">{</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This method is too long and does too many things!</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">processOrder</span><span class="op">(</span><span class="va">orderData</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">String</span> <span class="op">{</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Parse the order data</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">parts</span> <span class="op">=</span> orderData<span class="op">.</span>split<span class="op">(</span><span class="st">&quot;,&quot;</span><span class="op">)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">itemName</span> <span class="op">=</span> parts<span class="op">[</span><span class="dv">0</span><span class="op">]</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">quantity</span> <span class="op">=</span> parts<span class="op">[</span><span class="dv">1</span><span class="op">].</span>toInt<span class="op">()</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">priceStr</span> <span class="op">=</span> parts<span class="op">[</span><span class="dv">2</span><span class="op">]</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">price</span> <span class="op">=</span> priceStr<span class="op">.</span>toDouble<span class="op">()</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Validate the data</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>itemName<span class="op">.</span>isEmpty<span class="op">())</span> <span class="op">{</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="st">&quot;Error: Invalid item name&quot;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>quantity <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="st">&quot;Error: Invalid quantity&quot;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>price <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="st">&quot;Error: Invalid price&quot;</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Calculate totals</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">subtotal</span> <span class="op">=</span> quantity <span class="op">*</span> price</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        <span class="kw">var</span> <span class="va">discount</span> <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>quantity <span class="op">&gt;</span> <span class="dv">10</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>            discount <span class="op">=</span> subtotal <span class="op">*</span> <span class="fl">0.1</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="cf">if</span> <span class="op">(</span>quantity <span class="op">&gt;</span> <span class="dv">5</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>            discount <span class="op">=</span> subtotal <span class="op">*</span> <span class="fl">0.05</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">tax</span> <span class="op">=</span> <span class="op">(</span>subtotal <span class="op">-</span> discount<span class="op">)</span> <span class="op">*</span> <span class="fl">0.2</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">total</span> <span class="op">=</span> subtotal <span class="op">-</span> discount <span class="op">+</span> tax</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Format the output</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">sb</span> <span class="op">=</span> StringBuilder<span class="op">()</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>        sb<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Order Summary</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>        sb<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;=============</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>        sb<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Item: </span><span class="ss">$itemName</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>        sb<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Quantity: </span><span class="ss">$quantity</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>        sb<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Unit Price: £</span><span class="ss">${</span><span class="st">&quot;%.2f&quot;</span><span class="op">.</span>format<span class="op">(</span>price<span class="op">)</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>        sb<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Subtotal: £</span><span class="ss">${</span><span class="st">&quot;%.2f&quot;</span><span class="op">.</span>format<span class="op">(</span>subtotal<span class="op">)</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>        sb<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Discount: £</span><span class="ss">${</span><span class="st">&quot;%.2f&quot;</span><span class="op">.</span>format<span class="op">(</span>discount<span class="op">)</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>        sb<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Tax: £</span><span class="ss">${</span><span class="st">&quot;%.2f&quot;</span><span class="op">.</span>format<span class="op">(</span>tax<span class="op">)</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>        sb<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Total: £</span><span class="ss">${</span><span class="st">&quot;%.2f&quot;</span><span class="op">.</span>format<span class="op">(</span>total<span class="op">)</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> sb<span class="op">.</span>toString<span class="op">()</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">processor</span> <span class="op">=</span> OrderProcessorBefore<span class="op">()</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">result</span> <span class="op">=</span> processor<span class="op">.</span>processOrder<span class="op">(</span><span class="st">&quot;Laptop,12,500.00&quot;</span><span class="op">)</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span>result<span class="op">)</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="after-extracted-into-smaller-focused-methods">AFTER: Extracted
+into smaller, focused methods</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * AFTER: Long method broken down into focused methods</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * Each method has a single, clear responsibility</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> OrderProcessorAfter <span class="op">{</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Main method coordinates the workflow</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">processOrder</span><span class="op">(</span><span class="va">orderData</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">String</span> <span class="op">{</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">order</span> <span class="op">=</span> parseOrderData<span class="op">(</span>orderData<span class="op">)</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">validationError</span> <span class="op">=</span> validateOrder<span class="op">(</span>order<span class="op">)</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>validationError <span class="op">!=</span> <span class="kw">null</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> validationError</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">pricing</span> <span class="op">=</span> calculatePricing<span class="op">(</span>order<span class="op">)</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> formatOrderSummary<span class="op">(</span>order<span class="op">,</span> pricing<span class="op">)</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Focused method for parsing</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">parseOrderData</span><span class="op">(</span><span class="va">orderData</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">OrderData</span> <span class="op">{</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">parts</span> <span class="op">=</span> orderData<span class="op">.</span>split<span class="op">(</span><span class="st">&quot;,&quot;</span><span class="op">)</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> OrderData<span class="op">(</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>            itemName <span class="op">=</span> parts<span class="op">[</span><span class="dv">0</span><span class="op">],</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>            quantity <span class="op">=</span> parts<span class="op">[</span><span class="dv">1</span><span class="op">].</span>toInt<span class="op">(),</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>            unitPrice <span class="op">=</span> parts<span class="op">[</span><span class="dv">2</span><span class="op">].</span>toDouble<span class="op">()</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        <span class="op">)</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Focused method for validation</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">validateOrder</span><span class="op">(</span><span class="va">order</span><span class="op">:</span> <span class="dt">OrderData</span><span class="op">):</span> <span class="dt">String</span><span class="op">?</span> <span class="op">{</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>order<span class="op">.</span>itemName<span class="op">.</span>isEmpty<span class="op">())</span> <span class="op">{</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="st">&quot;Error: Invalid item name&quot;</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>order<span class="op">.</span>quantity <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="st">&quot;Error: Invalid quantity&quot;</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>order<span class="op">.</span>unitPrice <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="st">&quot;Error: Invalid price&quot;</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">null</span> <span class="co">// No errors</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Focused method for calculations</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">calculatePricing</span><span class="op">(</span><span class="va">order</span><span class="op">:</span> <span class="dt">OrderData</span><span class="op">):</span> <span class="dt">PricingData</span> <span class="op">{</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">subtotal</span> <span class="op">=</span> order<span class="op">.</span>quantity <span class="op">*</span> order<span class="op">.</span>unitPrice</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">discount</span> <span class="op">=</span> calculateDiscount<span class="op">(</span>order<span class="op">.</span>quantity<span class="op">,</span> subtotal<span class="op">)</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">tax</span> <span class="op">=</span> <span class="op">(</span>subtotal <span class="op">-</span> discount<span class="op">)</span> <span class="op">*</span> <span class="fl">0.2</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">total</span> <span class="op">=</span> subtotal <span class="op">-</span> discount <span class="op">+</span> tax</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> PricingData<span class="op">(</span>subtotal<span class="op">,</span> discount<span class="op">,</span> tax<span class="op">,</span> total<span class="op">)</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Helper method for discount calculation</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">calculateDiscount</span><span class="op">(</span><span class="va">quantity</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> <span class="va">subtotal</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="cf">when</span> <span class="op">{</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>            quantity <span class="op">&gt;</span> <span class="dv">10</span> <span class="op">-&gt;</span> subtotal <span class="op">*</span> <span class="fl">0.1</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>            quantity <span class="op">&gt;</span> <span class="dv">5</span> <span class="op">-&gt;</span> subtotal <span class="op">*</span> <span class="fl">0.05</span></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span> <span class="op">-&gt;</span> <span class="fl">0.0</span></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Focused method for formatting</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">fun</span> <span class="fu">formatOrderSummary</span><span class="op">(</span><span class="va">order</span><span class="op">:</span> <span class="dt">OrderData</span><span class="op">,</span> <span class="va">pricing</span><span class="op">:</span> <span class="dt">PricingData</span><span class="op">):</span> <span class="dt">String</span> <span class="op">{</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> buildString <span class="op">{</span></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>            append<span class="op">(</span><span class="st">&quot;Order Summary</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>            append<span class="op">(</span><span class="st">&quot;=============</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>            append<span class="op">(</span><span class="st">&quot;Item: </span><span class="ss">${</span>order<span class="op">.</span>itemName<span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>            append<span class="op">(</span><span class="st">&quot;Quantity: </span><span class="ss">${</span>order<span class="op">.</span>quantity<span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>            append<span class="op">(</span><span class="st">&quot;Unit Price: £</span><span class="ss">${</span><span class="st">&quot;%.2f&quot;</span><span class="op">.</span>format<span class="op">(</span>order<span class="op">.</span>unitPrice<span class="op">)</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>            append<span class="op">(</span><span class="st">&quot;Subtotal: £</span><span class="ss">${</span><span class="st">&quot;%.2f&quot;</span><span class="op">.</span>format<span class="op">(</span>pricing<span class="op">.</span>subtotal<span class="op">)</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>            append<span class="op">(</span><span class="st">&quot;Discount: £</span><span class="ss">${</span><span class="st">&quot;%.2f&quot;</span><span class="op">.</span>format<span class="op">(</span>pricing<span class="op">.</span>discount<span class="op">)</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>            append<span class="op">(</span><span class="st">&quot;Tax: £</span><span class="ss">${</span><span class="st">&quot;%.2f&quot;</span><span class="op">.</span>format<span class="op">(</span>pricing<span class="op">.</span>tax<span class="op">)</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>            append<span class="op">(</span><span class="st">&quot;Total: £</span><span class="ss">${</span><span class="st">&quot;%.2f&quot;</span><span class="op">.</span>format<span class="op">(</span>pricing<span class="op">.</span>total<span class="op">)</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Data classes for structure</span></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">data</span> <span class="kw">class</span> OrderData<span class="op">(</span></span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">itemName</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">quantity</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span></span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">unitPrice</span><span class="op">:</span> <span class="dt">Double</span></span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">data</span> <span class="kw">class</span> PricingData<span class="op">(</span></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">subtotal</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">discount</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span></span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">tax</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span></span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">total</span><span class="op">:</span> <span class="dt">Double</span></span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">processor</span> <span class="op">=</span> OrderProcessorAfter<span class="op">()</span></span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">result</span> <span class="op">=</span> processor<span class="op">.</span>processOrder<span class="op">(</span><span class="st">&quot;Laptop,12,500.00&quot;</span><span class="op">)</span></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span>result<span class="op">)</span></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="what-changed-1">What Changed</h3>
+<ul>
+<li>✅ Single long method split into 6 focused methods</li>
+<li>✅ Each method has a single, clear responsibility</li>
+<li>✅ Methods are easier to understand and test individually</li>
+<li>✅ Data structures (OrderData, PricingData) make the code more
+organized</li>
+<li>✅ Logic flow is clearer in the main <code>processOrder()</code>
+method</li>
+</ul>
+<hr />
+<h2 id="large-class">3. Large Class</h2>
+<h3 id="the-problem-2">The Problem</h3>
+<p>A single class handling user management, email, logging, and database
+operations. This violates the Single Responsibility Principle.</p>
+<h3 id="before-one-class-doing-too-many-things">BEFORE: One class doing
+too many things</h3>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * BEFORE: Large class with too many responsibilities</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * This class handles user management, email, logging, and database operations</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UserManagerBefore <span class="op">{</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Too many instance variables - warning sign!</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">users</span> <span class="op">=</span> mutableListOf<span class="op">&lt;</span><span class="kw">String</span><span class="op">&gt;()</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">emails</span> <span class="op">=</span> mutableMapOf<span class="op">&lt;</span><span class="kw">String</span><span class="op">,</span> <span class="kw">String</span><span class="op">&gt;()</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">logMessages</span> <span class="op">=</span> mutableListOf<span class="op">&lt;</span><span class="kw">String</span><span class="op">&gt;()</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">var</span> <span class="va">dbConnection</span><span class="op">:</span> <span class="kw">String</span> <span class="op">=</span> <span class="st">&quot;localhost:5432&quot;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">var</span> <span class="va">emailServer</span><span class="op">:</span> <span class="kw">String</span> <span class="op">=</span> <span class="st">&quot;smtp.example.com&quot;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">var</span> <span class="va">logFile</span><span class="op">:</span> <span class="kw">String</span> <span class="op">=</span> <span class="st">&quot;app.log&quot;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// User management responsibilities</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">addUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">email</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        users<span class="op">.</span>add<span class="op">(</span>username<span class="op">)</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        emails<span class="op">[</span>username<span class="op">]</span> <span class="op">=</span> email</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        log<span class="op">(</span><span class="st">&quot;User added: </span><span class="ss">$username</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        saveToDatabase<span class="op">(</span>username<span class="op">,</span> email<span class="op">)</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">removeUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        users<span class="op">.</span>remove<span class="op">(</span>username<span class="op">)</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        emails<span class="op">.</span>remove<span class="op">(</span>username<span class="op">)</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        log<span class="op">(</span><span class="st">&quot;User removed: </span><span class="ss">$username</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        deleteFromDatabase<span class="op">(</span>username<span class="op">)</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Email responsibilities</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">sendEmail</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">subject</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">body</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">email</span> <span class="op">=</span> emails<span class="op">[</span>username<span class="op">]</span> <span class="op">?:</span> <span class="kw">return</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        log<span class="op">(</span><span class="st">&quot;Sending email to </span><span class="ss">$email</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Connecting to </span><span class="ss">$emailServer</span><span class="st">...&quot;</span><span class="op">)</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Sending to: </span><span class="ss">$email</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Subject: </span><span class="ss">$subject</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Body: </span><span class="ss">$body</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Logging responsibilities</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">log</span><span class="op">(</span><span class="va">message</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">timestamp</span> <span class="op">=</span> System<span class="op">.</span>currentTimeMillis<span class="op">()</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">logEntry</span> <span class="op">=</span> <span class="st">&quot;[</span><span class="ss">$timestamp</span><span class="st">] </span><span class="ss">$message</span><span class="st">&quot;</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>        logMessages<span class="op">.</span>add<span class="op">(</span>logEntry<span class="op">)</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;LOG: </span><span class="ss">$logEntry</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">printLogs</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;=== Log History ===&quot;</span><span class="op">)</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>        logMessages<span class="op">.</span>forEach <span class="op">{</span> println<span class="op">(</span>it<span class="op">)</span> <span class="op">}</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Database responsibilities</span></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">saveToDatabase</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">email</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Connecting to database: </span><span class="ss">$dbConnection</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Saving user: </span><span class="ss">$username</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">deleteFromDatabase</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Connecting to database: </span><span class="ss">$dbConnection</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Deleting user: </span><span class="ss">$username</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Configuration responsibilities</span></span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">setDatabaseConnection</span><span class="op">(</span><span class="va">connection</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>        dbConnection <span class="op">=</span> connection</span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>        log<span class="op">(</span><span class="st">&quot;Database connection updated&quot;</span><span class="op">)</span></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">setEmailServer</span><span class="op">(</span><span class="va">server</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>        emailServer <span class="op">=</span> server</span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>        log<span class="op">(</span><span class="st">&quot;Email server updated&quot;</span><span class="op">)</span></span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">manager</span> <span class="op">=</span> UserManagerBefore<span class="op">()</span></span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>    manager<span class="op">.</span>addUser<span class="op">(</span><span class="st">&quot;alice&quot;</span><span class="op">,</span> <span class="st">&quot;alice@example.com&quot;</span><span class="op">)</span></span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>    manager<span class="op">.</span>sendEmail<span class="op">(</span><span class="st">&quot;alice&quot;</span><span class="op">,</span> <span class="st">&quot;Welcome&quot;</span><span class="op">,</span> <span class="st">&quot;Welcome to our service!&quot;</span><span class="op">)</span></span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>    manager<span class="op">.</span>printLogs<span class="op">()</span></span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="after-split-into-focused-single-responsibility-classes">AFTER:
+Split into focused, single-responsibility classes</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * AFTER: Split into multiple focused classes</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * Each class has a single, clear responsibility</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Class 1: User Management</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UserRepository <span class="op">{</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">users</span> <span class="op">=</span> mutableListOf<span class="op">&lt;</span><span class="kw">String</span><span class="op">&gt;()</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">emails</span> <span class="op">=</span> mutableMapOf<span class="op">&lt;</span><span class="kw">String</span><span class="op">,</span> <span class="kw">String</span><span class="op">&gt;()</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">addUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">email</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        users<span class="op">.</span>add<span class="op">(</span>username<span class="op">)</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        emails<span class="op">[</span>username<span class="op">]</span> <span class="op">=</span> email</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">removeUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        users<span class="op">.</span>remove<span class="op">(</span>username<span class="op">)</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        emails<span class="op">.</span>remove<span class="op">(</span>username<span class="op">)</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">getEmail</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">):</span> <span class="dt">String</span><span class="op">?</span> <span class="op">{</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> emails<span class="op">[</span>username<span class="op">]</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">getUsers</span><span class="op">():</span> <span class="dt">List</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> users<span class="op">.</span>toList<span class="op">()</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="co">// Class 2: Email Service</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EmailService<span class="op">(</span><span class="kw">private</span> <span class="kw">val</span> <span class="va">serverAddress</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">sendEmail</span><span class="op">(</span><span class="va">emailAddress</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">subject</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">body</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Connecting to </span><span class="ss">$serverAddress</span><span class="st">...&quot;</span><span class="op">)</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Sending to: </span><span class="ss">$emailAddress</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Subject: </span><span class="ss">$subject</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Body: </span><span class="ss">$body</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="co">// Class 3: Logger</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Logger <span class="op">{</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">logMessages</span> <span class="op">=</span> mutableListOf<span class="op">&lt;</span><span class="kw">String</span><span class="op">&gt;()</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">log</span><span class="op">(</span><span class="va">message</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">timestamp</span> <span class="op">=</span> System<span class="op">.</span>currentTimeMillis<span class="op">()</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">logEntry</span> <span class="op">=</span> <span class="st">&quot;[</span><span class="ss">$timestamp</span><span class="st">] </span><span class="ss">$message</span><span class="st">&quot;</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>        logMessages<span class="op">.</span>add<span class="op">(</span>logEntry<span class="op">)</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;LOG: </span><span class="ss">$logEntry</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">printLogs</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;=== Log History ===&quot;</span><span class="op">)</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>        logMessages<span class="op">.</span>forEach <span class="op">{</span> println<span class="op">(</span>it<span class="op">)</span> <span class="op">}</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a><span class="co">// Class 4: Database Access</span></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DatabaseService<span class="op">(</span><span class="kw">private</span> <span class="kw">val</span> <span class="va">connectionString</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">saveUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">email</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Connecting to database: </span><span class="ss">$connectionString</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Saving user: </span><span class="ss">$username</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">deleteUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Connecting to database: </span><span class="ss">$connectionString</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Deleting user: </span><span class="ss">$username</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a><span class="co">// Class 5: Coordinator (uses other classes)</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> UserManagerAfter<span class="op">(</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">userRepository</span><span class="op">:</span> <span class="dt">UserRepository</span><span class="op">,</span></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">emailService</span><span class="op">:</span> <span class="dt">EmailService</span><span class="op">,</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">logger</span><span class="op">:</span> <span class="dt">Logger</span><span class="op">,</span></span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">databaseService</span><span class="op">:</span> <span class="dt">DatabaseService</span></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">addUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">email</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>        userRepository<span class="op">.</span>addUser<span class="op">(</span>username<span class="op">,</span> email<span class="op">)</span></span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>        logger<span class="op">.</span>log<span class="op">(</span><span class="st">&quot;User added: </span><span class="ss">$username</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>        databaseService<span class="op">.</span>saveUser<span class="op">(</span>username<span class="op">,</span> email<span class="op">)</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">removeUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>        userRepository<span class="op">.</span>removeUser<span class="op">(</span>username<span class="op">)</span></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>        logger<span class="op">.</span>log<span class="op">(</span><span class="st">&quot;User removed: </span><span class="ss">$username</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a>        databaseService<span class="op">.</span>deleteUser<span class="op">(</span>username<span class="op">)</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">sendEmailToUser</span><span class="op">(</span><span class="va">username</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">subject</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="va">body</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">email</span> <span class="op">=</span> userRepository<span class="op">.</span>getEmail<span class="op">(</span>username<span class="op">)</span> <span class="op">?:</span> <span class="kw">return</span></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>        logger<span class="op">.</span>log<span class="op">(</span><span class="st">&quot;Sending email to </span><span class="ss">$email</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>        emailService<span class="op">.</span>sendEmail<span class="op">(</span>email<span class="op">,</span> subject<span class="op">,</span> body<span class="op">)</span></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">printLogs</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>        logger<span class="op">.</span>printLogs<span class="op">()</span></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Set up dependencies</span></span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">userRepo</span> <span class="op">=</span> UserRepository<span class="op">()</span></span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">emailService</span> <span class="op">=</span> EmailService<span class="op">(</span><span class="st">&quot;smtp.example.com&quot;</span><span class="op">)</span></span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">logger</span> <span class="op">=</span> Logger<span class="op">()</span></span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">database</span> <span class="op">=</span> DatabaseService<span class="op">(</span><span class="st">&quot;localhost:5432&quot;</span><span class="op">)</span></span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Create coordinator with dependencies</span></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">manager</span> <span class="op">=</span> UserManagerAfter<span class="op">(</span>userRepo<span class="op">,</span> emailService<span class="op">,</span> logger<span class="op">,</span> database<span class="op">)</span></span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Use the system</span></span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>    manager<span class="op">.</span>addUser<span class="op">(</span><span class="st">&quot;alice&quot;</span><span class="op">,</span> <span class="st">&quot;alice@example.com&quot;</span><span class="op">)</span></span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>    manager<span class="op">.</span>sendEmailToUser<span class="op">(</span><span class="st">&quot;alice&quot;</span><span class="op">,</span> <span class="st">&quot;Welcome&quot;</span><span class="op">,</span> <span class="st">&quot;Welcome to our service!&quot;</span><span class="op">)</span></span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>    manager<span class="op">.</span>printLogs<span class="op">()</span></span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="what-changed-2">What Changed</h3>
+<ul>
+<li>✅ One large class split into 5 focused classes</li>
+<li>✅ Each class has a single responsibility</li>
+<li>✅ UserRepository: manages user data</li>
+<li>✅ EmailService: handles email operations</li>
+<li>✅ Logger: manages logging</li>
+<li>✅ DatabaseService: handles database operations</li>
+<li>✅ UserManagerAfter: coordinates between services</li>
+<li>✅ Easier to test each component independently</li>
+<li>✅ Can swap implementations (e.g., different database services)</li>
+</ul>
+<hr />
+<h2 id="long-parameter-list">4. Long Parameter List</h2>
+<h3 id="the-problem-3">The Problem</h3>
+<p>A method with too many parameters is hard to use, easy to get wrong,
+and often indicates the method is trying to do too much.</p>
+<h3 id="before-too-many-parameters">BEFORE: Too many parameters</h3>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * BEFORE: Long parameter list (12 parameters!)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * Hard to use and easy to make mistakes</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ReportGeneratorBefore <span class="op">{</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">generateReport</span><span class="op">(</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">title</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">author</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">date</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">department</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">category</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">priority</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">includeCharts</span><span class="op">:</span> <span class="dt">Boolean</span><span class="op">,</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">includeStatistics</span><span class="op">:</span> <span class="dt">Boolean</span><span class="op">,</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">fontSize</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="va">fontFamily</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">pageSize</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">orientation</span><span class="op">:</span> <span class="dt">String</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">):</span> <span class="dt">String</span> <span class="op">{</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">report</span> <span class="op">=</span> StringBuilder<span class="op">()</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;=== </span><span class="ss">$title</span><span class="st"> ===</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Author: </span><span class="ss">$author</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Date: </span><span class="ss">$date</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Department: </span><span class="ss">$department</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Category: </span><span class="ss">$category</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Priority: </span><span class="ss">$priority</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Font: </span><span class="ss">$fontFamily</span><span class="st">, </span><span class="ss">${</span>fontSize<span class="ss">}</span><span class="st">pt</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Page: </span><span class="ss">$pageSize</span><span class="st"> (</span><span class="ss">$orientation</span><span class="st">)</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Charts: </span><span class="ss">${</span><span class="cf">if</span> <span class="op">(</span>includeCharts<span class="op">)</span> <span class="st">&quot;Yes&quot;</span> <span class="cf">else</span> <span class="st">&quot;No&quot;</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Statistics: </span><span class="ss">${</span><span class="cf">if</span> <span class="op">(</span>includeStatistics<span class="op">)</span> <span class="st">&quot;Yes&quot;</span> <span class="cf">else</span> <span class="st">&quot;No&quot;</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">[Report content would go here]</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> report<span class="op">.</span>toString<span class="op">()</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">generator</span> <span class="op">=</span> ReportGeneratorBefore<span class="op">()</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Look at this overwhelming method call!</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">report</span> <span class="op">=</span> generator<span class="op">.</span>generateReport<span class="op">(</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Monthly Sales Report&quot;</span><span class="op">,</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;John Smith&quot;</span><span class="op">,</span></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;2024-11-21&quot;</span><span class="op">,</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Sales&quot;</span><span class="op">,</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Financial&quot;</span><span class="op">,</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>        <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>        <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>        <span class="dv">12</span><span class="op">,</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Arial&quot;</span><span class="op">,</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;A4&quot;</span><span class="op">,</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Portrait&quot;</span></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span>report<span class="op">)</span></span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="after-parameters-grouped-into-configuration-objects">AFTER:
+Parameters grouped into configuration objects</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * AFTER: Parameters grouped into logical data classes</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * Much easier to use and extend</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Data classes to group related parameters</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> ReportMetadata<span class="op">(</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">title</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">author</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">date</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">department</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">category</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">priority</span><span class="op">:</span> <span class="dt">Int</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> ReportOptions<span class="op">(</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">includeCharts</span><span class="op">:</span> <span class="dt">Boolean</span> <span class="op">=</span> false<span class="op">,</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">includeStatistics</span><span class="op">:</span> <span class="dt">Boolean</span> <span class="op">=</span> false</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> ReportFormatting<span class="op">(</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">fontSize</span><span class="op">:</span> <span class="dt">Int</span> <span class="op">=</span> <span class="dv">12</span><span class="op">,</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">fontFamily</span><span class="op">:</span> <span class="dt">String</span> <span class="op">=</span> <span class="st">&quot;Arial&quot;</span><span class="op">,</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">pageSize</span><span class="op">:</span> <span class="dt">String</span> <span class="op">=</span> <span class="st">&quot;A4&quot;</span><span class="op">,</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">orientation</span><span class="op">:</span> <span class="dt">String</span> <span class="op">=</span> <span class="st">&quot;Portrait&quot;</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ReportGeneratorAfter <span class="op">{</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Much cleaner method signature with only 3 parameters!</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">generateReport</span><span class="op">(</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>        <span class="va">metadata</span><span class="op">:</span> <span class="dt">ReportMetadata</span><span class="op">,</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>        <span class="va">options</span><span class="op">:</span> <span class="dt">ReportOptions</span> <span class="op">=</span> ReportOptions<span class="op">(),</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>        <span class="va">formatting</span><span class="op">:</span> <span class="dt">ReportFormatting</span> <span class="op">=</span> ReportFormatting<span class="op">()</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">):</span> <span class="dt">String</span> <span class="op">{</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">report</span> <span class="op">=</span> StringBuilder<span class="op">()</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;=== </span><span class="ss">${</span>metadata<span class="op">.</span>title<span class="ss">}</span><span class="st"> ===</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Author: </span><span class="ss">${</span>metadata<span class="op">.</span>author<span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Date: </span><span class="ss">${</span>metadata<span class="op">.</span>date<span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Department: </span><span class="ss">${</span>metadata<span class="op">.</span>department<span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Category: </span><span class="ss">${</span>metadata<span class="op">.</span>category<span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Priority: </span><span class="ss">${</span>metadata<span class="op">.</span>priority<span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Font: </span><span class="ss">${</span>formatting<span class="op">.</span>fontFamily<span class="ss">}</span><span class="st">, </span><span class="ss">${</span>formatting<span class="op">.</span>fontSize<span class="ss">}</span><span class="st">pt</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Page: </span><span class="ss">${</span>formatting<span class="op">.</span>pageSize<span class="ss">}</span><span class="st"> (</span><span class="ss">${</span>formatting<span class="op">.</span>orientation<span class="ss">}</span><span class="st">)</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Charts: </span><span class="ss">${</span><span class="cf">if</span> <span class="op">(</span>options<span class="op">.</span>includeCharts<span class="op">)</span> <span class="st">&quot;Yes&quot;</span> <span class="cf">else</span> <span class="st">&quot;No&quot;</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;Statistics: </span><span class="ss">${</span><span class="cf">if</span> <span class="op">(</span>options<span class="op">.</span>includeStatistics<span class="op">)</span> <span class="st">&quot;Yes&quot;</span> <span class="cf">else</span> <span class="st">&quot;No&quot;</span><span class="ss">}</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>        report<span class="op">.</span>append<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">[Report content would go here]</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> report<span class="op">.</span>toString<span class="op">()</span></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">generator</span> <span class="op">=</span> ReportGeneratorAfter<span class="op">()</span></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Much clearer and easier to use!</span></span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">metadata</span> <span class="op">=</span> ReportMetadata<span class="op">(</span></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a>        title <span class="op">=</span> <span class="st">&quot;Monthly Sales Report&quot;</span><span class="op">,</span></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>        author <span class="op">=</span> <span class="st">&quot;John Smith&quot;</span><span class="op">,</span></span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>        date <span class="op">=</span> <span class="st">&quot;2024-11-21&quot;</span><span class="op">,</span></span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a>        department <span class="op">=</span> <span class="st">&quot;Sales&quot;</span><span class="op">,</span></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>        category <span class="op">=</span> <span class="st">&quot;Financial&quot;</span><span class="op">,</span></span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>        priority <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">options</span> <span class="op">=</span> ReportOptions<span class="op">(</span></span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>        includeCharts <span class="op">=</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>        includeStatistics <span class="op">=</span> <span class="kw">true</span></span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Can use defaults for formatting</span></span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">report</span> <span class="op">=</span> generator<span class="op">.</span>generateReport<span class="op">(</span>metadata<span class="op">,</span> options<span class="op">)</span></span>
+<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span>report<span class="op">)</span></span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Or specify custom formatting</span></span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">customFormatting</span> <span class="op">=</span> ReportFormatting<span class="op">(</span></span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>        fontSize <span class="op">=</span> <span class="dv">14</span><span class="op">,</span></span>
+<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a>        fontFamily <span class="op">=</span> <span class="st">&quot;Times New Roman&quot;</span></span>
+<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">report2</span> <span class="op">=</span> generator<span class="op">.</span>generateReport<span class="op">(</span>metadata<span class="op">,</span> options<span class="op">,</span> customFormatting<span class="op">)</span></span>
+<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="what-changed-3">What Changed</h3>
+<ul>
+<li>✅ 12 parameters reduced to 3 parameter objects</li>
+<li>✅ Related parameters grouped into logical data classes</li>
+<li>✅ Named parameters make usage clear</li>
+<li>✅ Default values provided for optional configuration</li>
+<li>✅ Easy to add new parameters without changing method signature</li>
+<li>✅ Much harder to pass parameters in wrong order</li>
+</ul>
+<hr />
+<h2 id="temporary-field">5. Temporary Field</h2>
+<h3 id="the-problem-4">The Problem</h3>
+<p>An instance variable that’s only used during certain operations and
+remains null most of the time, making the object’s state confusing.</p>
+<h3 id="before-instance-variable-used-temporarily">BEFORE: Instance
+variable used temporarily</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * BEFORE: Temporary field that&#39;s null most of the time</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * The calculationCache is only used during one method</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DataProcessorBefore <span class="op">{</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">data</span> <span class="op">=</span> mutableListOf<span class="op">&lt;</span><span class="kw">Int</span><span class="op">&gt;()</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This field is only used during calculateStatistics()</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// It&#39;s null most of the time - that&#39;s the smell!</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">var</span> <span class="va">calculationCache</span><span class="op">:</span> MutableMap<span class="op">&lt;</span><span class="kw">String</span><span class="op">,</span> <span class="kw">Double</span><span class="op">&gt;?</span> <span class="op">=</span> <span class="kw">null</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">addData</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        <span class="kw">data</span><span class="op">.</span>add<span class="op">(</span>value<span class="op">)</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">calculateStatistics</span><span class="op">():</span> <span class="dt">Map</span><span class="op">&lt;</span><span class="dt">String</span>, <span class="dt">Double</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Temporary field is only set here</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        calculationCache <span class="op">=</span> mutableMapOf<span class="op">()</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">sum</span> <span class="op">=</span> <span class="kw">data</span><span class="op">.</span>sum<span class="op">().</span>toDouble<span class="op">()</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">average</span> <span class="op">=</span> sum <span class="op">/</span> <span class="kw">data</span><span class="op">.</span>size</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">max</span> <span class="op">=</span> <span class="kw">data</span><span class="op">.</span>maxOrNull<span class="op">()?.</span>toDouble<span class="op">()</span> <span class="op">?:</span> <span class="fl">0.0</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">min</span> <span class="op">=</span> <span class="kw">data</span><span class="op">.</span>minOrNull<span class="op">()?.</span>toDouble<span class="op">()</span> <span class="op">?:</span> <span class="fl">0.0</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Using the temporary field</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        calculationCache<span class="op">!![</span><span class="st">&quot;sum&quot;</span><span class="op">]</span> <span class="op">=</span> sum</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        calculationCache<span class="op">!![</span><span class="st">&quot;average&quot;</span><span class="op">]</span> <span class="op">=</span> average</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>        calculationCache<span class="op">!![</span><span class="st">&quot;max&quot;</span><span class="op">]</span> <span class="op">=</span> max</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        calculationCache<span class="op">!![</span><span class="st">&quot;min&quot;</span><span class="op">]</span> <span class="op">=</span> min</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">result</span> <span class="op">=</span> calculationCache<span class="op">!!.</span>toMap<span class="op">()</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Temporary field is cleared after use</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>        calculationCache <span class="op">=</span> <span class="kw">null</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> result</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">printData</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Data: </span><span class="ss">$data</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Cache status: </span><span class="ss">${</span><span class="cf">if</span> <span class="op">(</span>calculationCache <span class="op">==</span> <span class="kw">null</span><span class="op">)</span> <span class="st">&quot;Empty&quot;</span> <span class="cf">else</span> <span class="st">&quot;Active&quot;</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">processor</span> <span class="op">=</span> DataProcessorBefore<span class="op">()</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    processor<span class="op">.</span>addData<span class="op">(</span><span class="dv">10</span><span class="op">)</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    processor<span class="op">.</span>addData<span class="op">(</span><span class="dv">20</span><span class="op">)</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>    processor<span class="op">.</span>addData<span class="op">(</span><span class="dv">30</span><span class="op">)</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Before calculation:&quot;</span><span class="op">)</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>    processor<span class="op">.</span>printData<span class="op">()</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">stats</span> <span class="op">=</span> processor<span class="op">.</span>calculateStatistics<span class="op">()</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Statistics: </span><span class="ss">$stats</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">After calculation:&quot;</span><span class="op">)</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    processor<span class="op">.</span>printData<span class="op">()</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="after-temporary-field-replaced-with-local-variable">AFTER:
+Temporary field replaced with local variable</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * AFTER: Temporary field removed - using local variable instead</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * Cleaner design with clearer object state</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DataProcessorAfter <span class="op">{</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">data</span> <span class="op">=</span> mutableListOf<span class="op">&lt;</span><span class="kw">Int</span><span class="op">&gt;()</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// No more temporary field!</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">addData</span><span class="op">(</span><span class="va">value</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        <span class="kw">data</span><span class="op">.</span>add<span class="op">(</span>value<span class="op">)</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">calculateStatistics</span><span class="op">():</span> <span class="dt">Map</span><span class="op">&lt;</span><span class="dt">String</span>, <span class="dt">Double</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Use a local variable instead of an instance variable</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">statistics</span> <span class="op">=</span> mutableMapOf<span class="op">&lt;</span><span class="kw">String</span><span class="op">,</span> <span class="kw">Double</span><span class="op">&gt;()</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">sum</span> <span class="op">=</span> <span class="kw">data</span><span class="op">.</span>sum<span class="op">().</span>toDouble<span class="op">()</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">average</span> <span class="op">=</span> sum <span class="op">/</span> <span class="kw">data</span><span class="op">.</span>size</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">max</span> <span class="op">=</span> <span class="kw">data</span><span class="op">.</span>maxOrNull<span class="op">()?.</span>toDouble<span class="op">()</span> <span class="op">?:</span> <span class="fl">0.0</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">min</span> <span class="op">=</span> <span class="kw">data</span><span class="op">.</span>minOrNull<span class="op">()?.</span>toDouble<span class="op">()</span> <span class="op">?:</span> <span class="fl">0.0</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        statistics<span class="op">[</span><span class="st">&quot;sum&quot;</span><span class="op">]</span> <span class="op">=</span> sum</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>        statistics<span class="op">[</span><span class="st">&quot;average&quot;</span><span class="op">]</span> <span class="op">=</span> average</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>        statistics<span class="op">[</span><span class="st">&quot;max&quot;</span><span class="op">]</span> <span class="op">=</span> max</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        statistics<span class="op">[</span><span class="st">&quot;min&quot;</span><span class="op">]</span> <span class="op">=</span> min</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> statistics<span class="op">.</span>toMap<span class="op">()</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Or even better - extract into a separate class</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">calculateStatisticsImproved</span><span class="op">():</span> <span class="dt">Statistics</span> <span class="op">{</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> Statistics<span class="op">(</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>            sum <span class="op">=</span> <span class="kw">data</span><span class="op">.</span>sum<span class="op">().</span>toDouble<span class="op">(),</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>            average <span class="op">=</span> <span class="kw">data</span><span class="op">.</span>average<span class="op">(),</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>            max <span class="op">=</span> <span class="kw">data</span><span class="op">.</span>maxOrNull<span class="op">()?.</span>toDouble<span class="op">()</span> <span class="op">?:</span> <span class="fl">0.0</span><span class="op">,</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>            min <span class="op">=</span> <span class="kw">data</span><span class="op">.</span>minOrNull<span class="op">()?.</span>toDouble<span class="op">()</span> <span class="op">?:</span> <span class="fl">0.0</span><span class="op">,</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>            count <span class="op">=</span> <span class="kw">data</span><span class="op">.</span>size</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>        <span class="op">)</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">printData</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Data: </span><span class="ss">$data</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    <span class="co">// New class to encapsulate statistics</span></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    <span class="kw">data</span> <span class="kw">class</span> Statistics<span class="op">(</span></span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">sum</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span></span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">average</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">max</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">min</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span></span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>        <span class="kw">val</span> <span class="va">count</span><span class="op">:</span> <span class="dt">Int</span></span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">processor</span> <span class="op">=</span> DataProcessorAfter<span class="op">()</span></span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>    processor<span class="op">.</span>addData<span class="op">(</span><span class="dv">10</span><span class="op">)</span></span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>    processor<span class="op">.</span>addData<span class="op">(</span><span class="dv">20</span><span class="op">)</span></span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>    processor<span class="op">.</span>addData<span class="op">(</span><span class="dv">30</span><span class="op">)</span></span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Data state:&quot;</span><span class="op">)</span></span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>    processor<span class="op">.</span>printData<span class="op">()</span></span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">stats</span> <span class="op">=</span> processor<span class="op">.</span>calculateStatistics<span class="op">()</span></span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Statistics (as map): </span><span class="ss">$stats</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">statsObj</span> <span class="op">=</span> processor<span class="op">.</span>calculateStatisticsImproved<span class="op">()</span></span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Statistics (as object): </span><span class="ss">$statsObj</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Average: </span><span class="ss">${</span>statsObj<span class="op">.</span>average<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="what-changed-4">What Changed</h3>
+<ul>
+<li>✅ Temporary instance variable removed</li>
+<li>✅ Replaced with local variable in the method</li>
+<li>✅ Object state is now clearer (only contains actual data)</li>
+<li>✅ Bonus: Created a Statistics data class for better structure</li>
+<li>✅ No more nullable fields that are “sometimes set”</li>
+<li>✅ Thread-safe (no shared mutable state)</li>
+</ul>
+<hr />
+<h2 id="data-class">6. Data Class</h2>
+<h3 id="the-problem-5">The Problem</h3>
+<p>Classes that only expose data with getters/setters but have no
+behavior or validation. Business logic ends up scattered in other
+classes.</p>
+<h3 id="before-just-data-with-no-protection">BEFORE: Just data with no
+protection</h3>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * BEFORE: Data class smell (not Kotlin&#39;s data class feature!)</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * Exposes all data with no validation or behavior</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">// This is the &quot;smelly&quot; version - just getters and setters</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BankAccountBefore <span class="op">{</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">accountNumber</span><span class="op">:</span> <span class="kw">String</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">balance</span><span class="op">:</span> <span class="kw">Double</span> <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">accountHolder</span><span class="op">:</span> <span class="kw">String</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">isActive</span><span class="op">:</span> <span class="kw">Boolean</span> <span class="op">=</span> <span class="kw">true</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// No validation, no behavior, just data access</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Anyone can set balance to negative, change account number, etc.</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co">// Problem: Business logic is outside the class</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> AccountManagerBefore <span class="op">{</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">processWithdrawal</span><span class="op">(</span><span class="va">account</span><span class="op">:</span> <span class="dt">BankAccountBefore</span><span class="op">,</span> <span class="va">amount</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Boolean</span> <span class="op">{</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Business logic is here instead of in BankAccount!</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>account<span class="op">.</span>isActive<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Account is not active&quot;</span><span class="op">)</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>account<span class="op">.</span>balance <span class="op">&lt;</span> amount<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Insufficient funds&quot;</span><span class="op">)</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>        account<span class="op">.</span>balance <span class="op">-=</span> amount</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Withdrew £</span><span class="ss">$amount</span><span class="st">. New balance: £</span><span class="ss">${</span>account<span class="op">.</span>balance<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">true</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">processDeposit</span><span class="op">(</span><span class="va">account</span><span class="op">:</span> <span class="dt">BankAccountBefore</span><span class="op">,</span> <span class="va">amount</span><span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>        <span class="co">// More business logic outside the class</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>amount <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Invalid deposit amount&quot;</span><span class="op">)</span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>        account<span class="op">.</span>balance <span class="op">+=</span> amount</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Deposited £</span><span class="ss">$amount</span><span class="st">. New balance: £</span><span class="ss">${</span>account<span class="op">.</span>balance<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">account</span> <span class="op">=</span> BankAccountBefore<span class="op">()</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>    account<span class="op">.</span>accountNumber <span class="op">=</span> <span class="st">&quot;12345&quot;</span></span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>    account<span class="op">.</span>accountHolder <span class="op">=</span> <span class="st">&quot;Alice Smith&quot;</span></span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>    account<span class="op">.</span>balance <span class="op">=</span> <span class="fl">1000.0</span></span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>    <span class="co">// The problem: anyone can do this!</span></span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>    account<span class="op">.</span>balance <span class="op">=</span> <span class="op">-</span><span class="fl">500.0</span>  <span class="co">// No validation!</span></span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Balance set to: £</span><span class="ss">${</span>account<span class="op">.</span>balance<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Business logic is scattered in other classes</span></span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">manager</span> <span class="op">=</span> AccountManagerBefore<span class="op">()</span></span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>    account<span class="op">.</span>balance <span class="op">=</span> <span class="fl">1000.0</span>  <span class="co">// Reset for example</span></span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a>    manager<span class="op">.</span>processWithdrawal<span class="op">(</span>account<span class="op">,</span> <span class="fl">200.0</span><span class="op">)</span></span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a>    manager<span class="op">.</span>processDeposit<span class="op">(</span>account<span class="op">,</span> <span class="fl">500.0</span><span class="op">)</span></span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="after-encapsulated-data-with-behavior">AFTER: Encapsulated data
+with behavior</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * AFTER: Proper encapsulation with behavior and validation</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"> * The class protects its data and contains its own business logic</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BankAccountAfter<span class="op">(</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">accountNumber</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span>  <span class="co">// Immutable</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">accountHolder</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span>  <span class="co">// Immutable</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="va">initialBalance</span><span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Private mutable state</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">var</span> <span class="va">_balance</span><span class="op">:</span> <span class="kw">Double</span> <span class="op">=</span> initialBalance</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        <span class="kw">set</span><span class="op">(</span>value<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">(</span>value <span class="op">&lt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>                <span class="kw">throw</span> IllegalArgumentException<span class="op">(</span><span class="st">&quot;Balance cannot be negative&quot;</span><span class="op">)</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>            field <span class="op">=</span> value</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Public read-only access</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">balance</span><span class="op">:</span> <span class="kw">Double</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        <span class="kw">get</span><span class="op">()</span> <span class="op">=</span> _balance</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">var</span> <span class="va">_isActive</span><span class="op">:</span> <span class="kw">Boolean</span> <span class="op">=</span> <span class="kw">true</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">isActive</span><span class="op">:</span> <span class="kw">Boolean</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>        <span class="kw">get</span><span class="op">()</span> <span class="op">=</span> _isActive</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Transaction history for auditing</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">private</span> <span class="kw">val</span> <span class="va">transactions</span> <span class="op">=</span> mutableListOf<span class="op">&lt;</span><span class="kw">String</span><span class="op">&gt;()</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Business logic is IN the class where it belongs</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">deposit</span><span class="op">(</span><span class="va">amount</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Boolean</span> <span class="op">{</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>amount <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Error: Deposit amount must be positive&quot;</span><span class="op">)</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>        _balance <span class="op">+=</span> amount</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>        transactions<span class="op">.</span>add<span class="op">(</span><span class="st">&quot;Deposit: +£</span><span class="ss">$amount</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Deposited £</span><span class="ss">$amount</span><span class="st">. New balance: £</span><span class="ss">$_balance</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">true</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">withdraw</span><span class="op">(</span><span class="va">amount</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Boolean</span> <span class="op">{</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(!</span>_isActive<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Error: Account is not active&quot;</span><span class="op">)</span></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>amount <span class="op">&lt;=</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Error: Withdrawal amount must be positive&quot;</span><span class="op">)</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>amount <span class="op">&gt;</span> _balance<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Error: Insufficient funds. Balance: £</span><span class="ss">$_balance</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span> <span class="kw">false</span></span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>        _balance <span class="op">-=</span> amount</span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>        transactions<span class="op">.</span>add<span class="op">(</span><span class="st">&quot;Withdrawal: -£</span><span class="ss">$amount</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Withdrew £</span><span class="ss">$amount</span><span class="st">. New balance: £</span><span class="ss">$_balance</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> <span class="kw">true</span></span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">closeAccount</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>_balance <span class="op">&gt;</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Error: Cannot close account with remaining balance&quot;</span><span class="op">)</span></span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>            <span class="kw">return</span></span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>        _isActive <span class="op">=</span> <span class="kw">false</span></span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>        transactions<span class="op">.</span>add<span class="op">(</span><span class="st">&quot;Account closed&quot;</span><span class="op">)</span></span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Account closed&quot;</span><span class="op">)</span></span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">getTransactionHistory</span><span class="op">():</span> <span class="dt">List</span><span class="op">&lt;</span><span class="dt">String</span><span class="op">&gt;</span> <span class="op">{</span></span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Return a copy to prevent external modification</span></span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>        <span class="kw">return</span> transactions<span class="op">.</span>toList<span class="op">()</span></span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>    <span class="kw">fun</span> <span class="fu">printStatement</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== Account Statement ===&quot;</span><span class="op">)</span></span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Account: </span><span class="ss">$accountNumber</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Holder: </span><span class="ss">$accountHolder</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Balance: £</span><span class="ss">$_balance</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Status: </span><span class="ss">${</span><span class="cf">if</span> <span class="op">(</span>_isActive<span class="op">)</span> <span class="st">&quot;Active&quot;</span> <span class="cf">else</span> <span class="st">&quot;Closed&quot;</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Transaction History:&quot;</span><span class="op">)</span></span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>        transactions<span class="op">.</span>forEach <span class="op">{</span> println<span class="op">(</span><span class="st">&quot;  </span><span class="ss">$it</span><span class="st">&quot;</span><span class="op">)</span> <span class="op">}</span></span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;========================</span><span class="sc">\n</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;=== BEFORE: Unprotected data ===&quot;</span><span class="op">)</span></span>
+<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">accountBefore</span> <span class="op">=</span> BankAccountBefore<span class="op">()</span></span>
+<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>    accountBefore<span class="op">.</span>accountNumber <span class="op">=</span> <span class="st">&quot;12345&quot;</span></span>
+<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>    accountBefore<span class="op">.</span>balance <span class="op">=</span> <span class="op">-</span><span class="fl">500.0</span>  <span class="co">// This shouldn&#39;t be allowed!</span></span>
+<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Balance set to: £</span><span class="ss">${</span>accountBefore<span class="op">.</span>balance<span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== AFTER: Protected with validation ===&quot;</span><span class="op">)</span></span>
+<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">accountAfter</span> <span class="op">=</span> BankAccountAfter<span class="op">(</span><span class="st">&quot;ACC-67890&quot;</span><span class="op">,</span> <span class="st">&quot;Bob Jones&quot;</span><span class="op">,</span> <span class="fl">1000.0</span><span class="op">)</span></span>
+<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a>    <span class="co">// These operations are now properly controlled</span></span>
+<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a>    accountAfter<span class="op">.</span>deposit<span class="op">(</span><span class="fl">500.0</span><span class="op">)</span></span>
+<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a>    accountAfter<span class="op">.</span>withdraw<span class="op">(</span><span class="fl">200.0</span><span class="op">)</span></span>
+<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a>    accountAfter<span class="op">.</span>withdraw<span class="op">(</span><span class="fl">2000.0</span><span class="op">)</span>  <span class="co">// Should fail - insufficient funds</span></span>
+<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This won&#39;t compile - balance is read-only!</span></span>
+<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a>    <span class="co">// accountAfter.balance = -500.0  // Compiler error!</span></span>
+<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Can&#39;t modify account number either</span></span>
+<span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a>    <span class="co">// accountAfter.accountNumber = &quot;HACKED&quot;  // Compiler error!</span></span>
+<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a>    accountAfter<span class="op">.</span>printStatement<span class="op">()</span></span>
+<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="what-changed-5">What Changed</h3>
+<ul>
+<li>✅ Data fields are now protected with proper encapsulation</li>
+<li>✅ Business logic moved into the class where it belongs</li>
+<li>✅ Validation happens at the point of modification</li>
+<li>✅ Immutable fields (accountNumber, accountHolder) can’t be
+changed</li>
+<li>✅ Balance has controlled access through deposit() and
+withdraw()</li>
+<li>✅ Transaction history tracks all operations</li>
+<li>✅ Clear, intention-revealing methods</li>
+<li>✅ Impossible to put the object in an invalid state</li>
+</ul>
+<hr />
+<h2 id="quick-reference-when-to-apply-each-refactoring">Quick Reference:
+When to Apply Each Refactoring</h2>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 40%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr>
+<th>Code Smell</th>
+<th>Primary Refactoring</th>
+<th>When to Apply</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Duplicated Code</strong></td>
+<td>Extract Method</td>
+<td>Same code appears 2+ times</td>
+</tr>
+<tr>
+<td><strong>Long Method</strong></td>
+<td>Extract Method</td>
+<td>Method longer than one screen</td>
+</tr>
+<tr>
+<td><strong>Large Class</strong></td>
+<td>Extract Class</td>
+<td>Class has 4+ distinct responsibilities</td>
+</tr>
+<tr>
+<td><strong>Long Parameter List</strong></td>
+<td>Introduce Parameter Object</td>
+<td>More than 3-4 parameters</td>
+</tr>
+<tr>
+<td><strong>Temporary Field</strong></td>
+<td>Remove Field / Extract Class</td>
+<td>Field is null most of the time</td>
+</tr>
+<tr>
+<td><strong>Data Class</strong></td>
+<td>Move Method / Encapsulate Field</td>
+<td>Class has no behavior, just data</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="key-principles-for-clean-code">Key Principles for Clean
+Code</h2>
+<ol type="1">
+<li><strong>Single Responsibility Principle</strong>: Each class/method
+should do one thing well</li>
+<li><strong>Don’t Repeat Yourself (DRY)</strong>: Extract common code
+into reusable methods</li>
+<li><strong>Encapsulation</strong>: Hide internal state and expose
+controlled interfaces</li>
+<li><strong>Clarity Over Cleverness</strong>: Make code easy to
+understand</li>
+<li><strong>Small Methods</strong>: Keep methods short and focused</li>
+<li><strong>Meaningful Names</strong>: Use descriptive names that reveal
+intent</li>
+</ol>
+<hr />
+<h2 id="testing-after-refactoring">Testing After Refactoring</h2>
+<p>Always verify that refactoring hasn’t changed behavior:</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Example test pattern</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">testRefactoring</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">before</span> <span class="op">=</span> OriginalClass<span class="op">()</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">after</span> <span class="op">=</span> RefactoredClass<span class="op">()</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Test same inputs produce same outputs</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">input</span> <span class="op">=</span> <span class="st">&quot;test data&quot;</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    assert<span class="op">(</span>before<span class="op">.</span>process<span class="op">(</span>input<span class="op">)</span> <span class="op">==</span> after<span class="op">.</span>process<span class="op">(</span>input<span class="op">))</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;✓ Refactoring preserved behavior&quot;</span><span class="op">)</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<hr />
+<p><strong>Remember</strong>: The goal of refactoring is to make code
+easier to understand and maintain, not to show off clever tricks. Always
+prioritize clarity and simplicity!</p>
