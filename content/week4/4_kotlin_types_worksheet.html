@@ -1,0 +1,187 @@
+<h1 id="lecture-3-kotlin-worksheet">Lecture 3: Kotlin Worksheet</h1>
+<h2 id="quiz-section">Quiz Section</h2>
+<h3 id="question-1-fill-in-the-blanks">Question 1: Fill in the
+Blanks</h3>
+<p>Complete the following sentences using words from the word bank
+below.</p>
+<p>In a __________ typed language, the type of every variable is known
+at __________. The compiler verifies that all operations are type-safe
+before generating the executable program. In contrast, __________ typed
+languages check types at __________, which means variables can hold
+values of any type and the type can change during program execution.</p>
+<p><strong>Word Bank:</strong> dynamically, compile time, statically,
+runtime</p>
+<hr />
+<h3 id="question-2-fill-in-the-blanks">Question 2: Fill in the
+Blanks</h3>
+<p>Complete the following sentences using words from the word bank
+below.</p>
+<p>Kotlin’s type system is considered __________ typed because it
+requires __________ type conversions and enforces type compatibility
+strictly. For example, you cannot directly add an Int to a Double
+without using the __________ method. This prevents __________ bugs and
+makes all conversions visible in the code.</p>
+<p><strong>Word Bank:</strong> toDouble(), explicit, strongly,
+accidental</p>
+<hr />
+<h3 id="question-3-fill-in-the-blanks">Question 3: Fill in the
+Blanks</h3>
+<p>Complete the following sentences using words from the word bank
+below.</p>
+<p>__________ provide a way to write flexible, reusable code while
+maintaining type safety. A __________ type like <code>List</code> has a
+type __________ that acts as a placeholder. When you create
+<code>List&lt;String&gt;</code>, String is the type __________ and
+<code>List&lt;String&gt;</code> is called a __________ type.</p>
+<p><strong>Word Bank:</strong> argument, parameter, generic, Generics,
+parameterized</p>
+<hr />
+<h3 id="question-4-multiple-choice">Question 4: Multiple Choice</h3>
+<p>What is the main advantage of static typing over dynamic typing?</p>
+<ol type="A">
+<li>Static typing allows variables to change types during
+execution<br />
+</li>
+<li>Static typing catches type errors at compile time before the program
+runs<br />
+</li>
+<li>Static typing requires less code to be written<br />
+</li>
+<li>Static typing is faster at runtime in all cases</li>
+</ol>
+<hr />
+<h3 id="question-5-multiple-choice">Question 5: Multiple Choice</h3>
+<p>Consider the following Kotlin code:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="va">numbers</span> <span class="op">=</span> mutableListOf<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>numbers<span class="op">.</span>add<span class="op">(</span><span class="st">&quot;four&quot;</span><span class="op">)</span></span></code></pre></div>
+<p>What will happen when you try to compile this code?</p>
+<ol type="A">
+<li>It will compile successfully and add the string “four” to the
+list<br />
+</li>
+<li>It will compile but throw a runtime error<br />
+</li>
+<li>It will not compile because of a type mismatch error<br />
+</li>
+<li>It will compile and convert “four” to the number 4</li>
+</ol>
+<hr />
+<h3 id="question-6-multiple-choice">Question 6: Multiple Choice</h3>
+<p>Which of the following statements about Kotlin’s type inference is
+TRUE?</p>
+<ol type="A">
+<li>Type inference means Kotlin is dynamically typed<br />
+</li>
+<li>Type inference allows you to change a variable’s type after
+declaration<br />
+</li>
+<li>Type inference lets the compiler deduce types automatically while
+maintaining static type checking<br />
+</li>
+<li>Type inference is only available for primitive types like Int and
+String</li>
+</ol>
+<hr />
+<h2 id="task-section">Task Section</h2>
+<h3 id="task-1-library-book-collection">Task 1: Library Book
+Collection</h3>
+<p>Create a type-safe book management system using generics. You need to
+implement a function that processes different types of collections.</p>
+<p><strong>Requirements:</strong> - Complete the
+<code>printCollection</code> function that takes a generic list and
+prints each item with its index - Create three different collections:
+one for book titles (String), one for publication years (Int), and one
+for prices (Double) - Demonstrate that the function works with all three
+types</p>
+<p><strong>Code Scaffolding:</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete this generic function</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="op">&lt;</span><span class="dt">T</span><span class="op">&gt;</span> <span class="fu">printCollection</span><span class="op">(</span><span class="va">items</span><span class="op">:</span> <span class="dt">List</span>&lt;<span class="va">T</span>&gt;<span class="op">,</span> <span class="va">collectionName</span><span class="op">:</span> <span class="dt">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Print the collection name</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Iterate through items and print each with its index</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Format: &quot;[index]: item&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Create a list of book titles</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">bookTitles</span> <span class="op">=</span> listOf<span class="op">(</span><span class="co">/* add 3 book titles */</span><span class="op">)</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Create a list of publication years</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">publicationYears</span> <span class="op">=</span> listOf<span class="op">(</span><span class="co">/* add 3 years */</span><span class="op">)</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Create a list of prices</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">prices</span> <span class="op">=</span> listOf<span class="op">(</span><span class="co">/* add 3 prices */</span><span class="op">)</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Call printCollection for each list</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Expected Output:</strong></p>
+<pre><code>Book Titles:
+[0]: The Hobbit
+[1]: 1984
+[2]: Pride and Prejudice
+
+Publication Years:
+[0]: 1937
+[1]: 1949
+[2]: 1813
+
+Prices:
+[0]: 12.99
+[1]: 9.99
+[2]: 14.99</code></pre>
+<hr />
+<h3 id="task-2-temperature-converter-with-type-safety">Task 2:
+Temperature Converter with Type Safety</h3>
+<p>Create a temperature conversion program that demonstrates Kotlin’s
+strong typing and explicit conversion requirements.</p>
+<p><strong>Requirements:</strong> - Complete the functions to convert
+temperatures between Celsius and Fahrenheit - The functions should work
+with Double precision - Demonstrate that Kotlin requires explicit
+conversion when mixing Int and Double types - Calculate and display
+average temperatures</p>
+<p><strong>Code Scaffolding:</strong></p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Convert Celsius to Fahrenheit</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Formula: F = C * 9/5 + 32</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">celsiusToFahrenheit</span><span class="op">(</span><span class="va">celsius</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Implement the conversion formula</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fl">0.0</span>  <span class="co">// Replace this</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Convert Fahrenheit to Celsius</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">// Formula: C = (F - 32) * 5/9</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">fahrenheitToCelsius</span><span class="op">(</span><span class="va">fahrenheit</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Implement the conversion formula</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fl">0.0</span>  <span class="co">// Replace this</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">// Calculate average temperature</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">calculateAverage</span><span class="op">(</span><span class="va">temps</span><span class="op">:</span> <span class="dt">List</span>&lt;<span class="va">Double</span>&gt;<span class="op">):</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Calculate and return the average</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> <span class="fl">0.0</span>  <span class="co">// Replace this</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Create a list of temperatures in Celsius (use Int values: 0, 20, 35)</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">celsiusTemps</span> <span class="op">=</span> listOf<span class="op">(</span><span class="co">/* add temperatures */</span><span class="op">)</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Celsius temperatures: </span><span class="ss">$celsiusTemps</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Convert each to Fahrenheit (remember to convert Int to Double!)</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Create a new list with the converted values</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Calculate and print the average Celsius temperature</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">// </span><span class="al">TODO</span><span class="co">: Calculate and print the average Fahrenheit temperature</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Expected Output:</strong></p>
+<pre><code>Celsius temperatures: [0, 20, 35]
+Fahrenheit temperatures: [32.0, 68.0, 95.0]
+
+Average Celsius: 18.33°C
+Average Fahrenheit: 65.0°F</code></pre>
+<p><strong>Hint:</strong> Remember that Kotlin requires explicit
+conversion from Int to Double using <code>.toDouble()</code></p>
+<hr />
+<p><strong>End of Worksheet</strong></p>

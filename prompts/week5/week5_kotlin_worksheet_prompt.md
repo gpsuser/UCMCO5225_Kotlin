@@ -39,6 +39,6 @@ Please provide the answers to both the quiz section and the tasks section in a s
 ## Note
 * Do not provide place for  students to enter their information or any other personal data in the worksheet.
 * Do not provide submission instructions or guidelines in the worksheet.
-* The worksheet heading should just contain the title "Lecture X: `Kotlin` Worksheet" - do not include any other information in the heading.
+* The worksheet heading should just contain the title `Worksheet` - do not include any other information in the heading.
 * Do not mention the word "cloze" or similar in the worksheet.
 

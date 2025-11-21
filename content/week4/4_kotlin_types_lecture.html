@@ -1,0 +1,933 @@
+<h1 id="type-systems-and-generics-in-kotlin">Type Systems and Generics
+in Kotlin</h1>
+<p><strong>CO5225 – Lecture 4</strong></p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<table>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 31%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr>
+<th>Section</th>
+<th>Topic</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><a href="#learning-outcomes">Learning Outcomes</a></td>
+<td>2 min</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="#1-introduction-to-type-systems">Introduction to Type
+Systems</a></td>
+<td>5 min</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="#2-type-safety">Type Safety</a></td>
+<td>5 min</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="#3-static-vs-dynamic-typing">Static vs Dynamic
+Typing</a></td>
+<td>10 min</td>
+</tr>
+<tr>
+<td>5</td>
+<td><a href="#4-kotlins-type-system-features">Kotlin’s Type System
+Features</a></td>
+<td>10 min</td>
+</tr>
+<tr>
+<td>6</td>
+<td><a href="#5-strong-vs-weak-typing">Strong vs Weak Typing</a></td>
+<td>8 min</td>
+</tr>
+<tr>
+<td>7</td>
+<td><a href="#6-introduction-to-generics">Introduction to
+Generics</a></td>
+<td>10 min</td>
+</tr>
+<tr>
+<td>8</td>
+<td><a href="#7-working-with-generic-types-in-kotlin">Working with
+Generic Types in Kotlin</a></td>
+<td>5 min</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="learning-outcomes">Learning Outcomes</h2>
+<p>By the end of this lecture, you will be able to:</p>
+<ol type="1">
+<li><strong>Explain</strong> the difference between statically typed and
+dynamically typed languages</li>
+<li><strong>Describe</strong> what type safety means and why it matters
+in programming</li>
+<li><strong>Compare</strong> Kotlin’s type system with other languages
+(Java, JavaScript)</li>
+<li><strong>Distinguish</strong> between strong and weak typing</li>
+<li><strong>Apply</strong> generics to create type-safe collections in
+Kotlin</li>
+<li><strong>Analyze</strong> how generic type parameters work and why
+they’re useful</li>
+</ol>
+<hr />
+<h2 id="introduction-to-type-systems">1. Introduction to Type
+Systems</h2>
+<p><strong>Time: 5 minutes</strong></p>
+<p>Every programming language has a <strong>type system</strong> - a set
+of rules that defines how the language categorizes and manages different
+kinds of data. Understanding type systems is crucial because they affect
+how you write code, when errors are caught, and how flexible your
+programs can be.</p>
+<h3 id="what-is-a-type">What is a Type?</h3>
+<p>A type defines: - What <strong>kind</strong> of data a variable can
+hold (numbers, text, boolean values, etc.) - What
+<strong>operations</strong> you can perform on that data - How much
+<strong>memory</strong> is needed to store the data</p>
+<h3 id="two-fundamental-approaches">Two Fundamental Approaches</h3>
+<p>Programming languages fall into two main categories:</p>
+<ol type="1">
+<li><strong>Statically Typed Languages</strong> - Types are checked at
+compile time (before the program runs)
+<ul>
+<li>Examples: Kotlin, Java, C++, TypeScript</li>
+</ul></li>
+<li><strong>Dynamically Typed Languages</strong> - Types are checked at
+runtime (while the program runs)
+<ul>
+<li>Examples: JavaScript, Python, Ruby</li>
+</ul></li>
+</ol>
+<p>This distinction has profound implications for how you develop
+software, debug errors, and maintain code over time.</p>
+<hr />
+<h2 id="type-safety">2. Type Safety</h2>
+<p><strong>Time: 5 minutes</strong></p>
+<h3 id="what-is-type-safety">What is Type Safety?</h3>
+<p><strong>Type safety</strong> refers to how well a programming
+language prevents <strong>type errors</strong> - situations where one
+data type is unintentionally treated as another.</p>
+<p>A type error occurs when you try to perform an operation on data that
+doesn’t support that operation. For example: - Trying to add a number to
+a piece of text - Calling a method that doesn’t exist for a particular
+type - Passing the wrong type of argument to a function</p>
+<h3 id="why-does-type-safety-matter">Why Does Type Safety Matter?</h3>
+<p>Type-safe languages help you: - <strong>Catch errors early</strong> -
+Many bugs are discovered before you run the program - <strong>Write more
+reliable code</strong> - The compiler acts as a safety net -
+<strong>Improve code clarity</strong> - Types serve as documentation -
+<strong>Enable better tooling</strong> - IDEs can provide accurate
+autocomplete and refactoring</p>
+<h3 id="the-trade-off">The Trade-off</h3>
+<p>More type safety generally means: - ✅ Fewer runtime errors - ✅
+Better IDE support - ❌ More verbose code (sometimes) - ❌ Less
+flexibility in certain scenarios</p>
+<p>Different languages make different choices about where to sit on this
+spectrum.</p>
+<hr />
+<h2 id="static-vs-dynamic-typing">3. Static vs Dynamic Typing</h2>
+<p><strong>Time: 10 minutes</strong></p>
+<h3 id="statically-typed-languages">Statically Typed Languages</h3>
+<p>In a <strong>statically typed language</strong>, the type of every
+variable is known at <strong>compile time</strong>. The compiler
+verifies that all operations are type-safe before generating the
+executable program.</p>
+<p><strong>Example - Kotlin (Static):</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program demonstrating static typing</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Declare a variable with explicit type</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">name</span><span class="op">:</span> <span class="kw">String</span> <span class="op">=</span> <span class="st">&quot;Andrew&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Name is: </span><span class="ss">$name</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Type: String&quot;</span><span class="op">)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This line would cause a COMPILE ERROR in Kotlin</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// name = 6  // Error: Type mismatch: inferred type is Int but String was expected</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// To change the value, it must be the same type</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> <span class="st">&quot;Sarah&quot;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Name is now: </span><span class="ss">$name</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">Name is: Andrew</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">Type: String</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">Name is now: Sarah</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<p><strong>Key point:</strong> The Kotlin compiler won’t let you compile
+code that assigns an <code>Int</code> to a <code>String</code> variable.
+The error is caught before you even run the program.</p>
+<h3 id="dynamically-typed-languages">Dynamically Typed Languages</h3>
+<p>In a <strong>dynamically typed language</strong>, types are resolved
+at <strong>runtime</strong>. Variables can hold values of any type, and
+the type can change during program execution.</p>
+<p><strong>Example - JavaScript (Dynamic):</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// JavaScript program demonstrating dynamic typing</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> name <span class="op">=</span> <span class="st">&quot;Andrew&quot;</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Name is: &quot;</span> <span class="op">+</span> name)<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Type: &quot;</span> <span class="op">+</span> <span class="kw">typeof</span> name)<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">// This is VALID in JavaScript - the type can change</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>name <span class="op">=</span> <span class="dv">6</span><span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Name is now: &quot;</span> <span class="op">+</span> name)<span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Type: &quot;</span> <span class="op">+</span> <span class="kw">typeof</span> name)<span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">Name is: Andrew</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">Type: string</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">Name is now: 6</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">Type: number</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<p><strong>Key point:</strong> JavaScript allows you to reassign
+variables to different types. This provides flexibility but can lead to
+unexpected behavior if you’re not careful.</p>
+<h3 id="practical-demonstration-function-type-checking">Practical
+Demonstration: Function Type Checking</h3>
+<p>Let’s see how static and dynamic typing affect function calls.</p>
+<p><strong>Kotlin - Static Type Checking:</strong></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program demonstrating compile-time type checking</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Function that adds two integers</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">sum</span><span class="op">(</span><span class="va">x</span><span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> <span class="op">{</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> x <span class="op">+</span> y</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Valid call - both arguments are Int</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">resultA</span> <span class="op">=</span> sum<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">1</span><span class="op">)</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;sum(1, 1) = </span><span class="ss">$resultA</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Invalid call - would not compile</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// val resultB = sum(&quot;1&quot;, &quot;1&quot;)  </span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Error: Type mismatch: inferred type is String but Int was expected</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This demonstrates that type errors are caught at COMPILE TIME</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Program compiled successfully - all types are correct!&quot;</span><span class="op">)</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">sum(1, 1) = 2</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">Program compiled successfully - all types are correct!</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<p><strong>JavaScript - Runtime Type Checking:</strong></p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// JavaScript program demonstrating runtime type behavior</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Function that adds two values</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">sum</span>(x<span class="op">,</span> y) {</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x <span class="op">+</span> y<span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Valid call - both arguments are numbers</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> resultA <span class="op">=</span> <span class="fu">sum</span>(<span class="dv">1</span><span class="op">,</span> <span class="dv">1</span>)<span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;sum(1, 1) = &quot;</span> <span class="op">+</span> resultA)<span class="op">;</span>  <span class="co">// Output: 2</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">// &quot;Valid&quot; call - but produces unexpected results!</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> resultB <span class="op">=</span> <span class="fu">sum</span>(<span class="st">&quot;1&quot;</span><span class="op">,</span> <span class="st">&quot;1&quot;</span>)<span class="op">;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;sum(&#39;1&#39;, &#39;1&#39;) = &quot;</span> <span class="op">+</span> resultB)<span class="op">;</span>  <span class="co">// Output: &quot;11&quot; (string concatenation)</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">// Mixed types - also produces unexpected results</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> resultC <span class="op">=</span> <span class="fu">sum</span>(<span class="dv">1</span><span class="op">,</span> <span class="st">&quot;1&quot;</span>)<span class="op">;</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;sum(1, &#39;1&#39;) = &quot;</span> <span class="op">+</span> resultC)<span class="op">;</span>  <span class="co">// Output: &quot;11&quot;</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="kw">var</span> resultD <span class="op">=</span> <span class="fu">sum</span>(<span class="dv">1</span><span class="op">,</span> <span class="fl">2.3</span>)<span class="op">;</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;sum(1, 2.3) = &quot;</span> <span class="op">+</span> resultD)<span class="op">;</span>  <span class="co">// Output: 3.3</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">sum(1, 1) = 2</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co">sum(&#39;1&#39;, &#39;1&#39;) = 11</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">sum(1, &#39;1&#39;) = 11</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">sum(1, 2.3) = 3.3</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<p><strong>Key observation:</strong> JavaScript compiles and runs with
+no errors, but the behavior may not be what you intended. The
+<code>+</code> operator performs string concatenation when given
+strings, which could be a bug if you expected numeric addition.</p>
+<hr />
+<h2 id="kotlins-type-system-features">4. Kotlin’s Type System
+Features</h2>
+<p><strong>Time: 10 minutes</strong></p>
+<h3 id="type-inference">Type Inference</h3>
+<p>One question you might ask is: “Do statically typed languages require
+you to declare the type of every variable?”</p>
+<p>The answer is <strong>not always</strong>! Kotlin uses <strong>type
+inference</strong> to deduce types automatically.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program demonstrating type inference</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Explicit type declaration</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">explicitName</span><span class="op">:</span> <span class="kw">String</span> <span class="op">=</span> <span class="st">&quot;Andrew&quot;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Type inference - Kotlin infers the type is String</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">inferredName</span> <span class="op">=</span> <span class="st">&quot;Sarah&quot;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// The compiler knows both are String type</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Explicit: </span><span class="ss">$explicitName</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Inferred: </span><span class="ss">$inferredName</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Both variables have the same restrictions</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// explicitName = 6  // Error!</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// inferredName = 6  // Also an error!</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// More examples of type inference</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">age</span> <span class="op">=</span> <span class="dv">25</span>  <span class="co">// Inferred as Int</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">height</span> <span class="op">=</span> <span class="fl">1.75</span>  <span class="co">// Inferred as Double</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">isStudent</span> <span class="op">=</span> <span class="kw">true</span>  <span class="co">// Inferred as Boolean</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Inferred types:&quot;</span><span class="op">)</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;age is Int: </span><span class="ss">$age</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;height is Double: </span><span class="ss">$height</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;isStudent is Boolean: </span><span class="ss">$isStudent</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co">Explicit: Andrew</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co">Inferred: Sarah</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="co">Inferred types:</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="co">age is Int: 25</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="co">height is Double: 1.75</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="co">isStudent is Boolean: true</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<h3 id="kotlin-vs-java-type-coercion">Kotlin vs Java: Type Coercion</h3>
+<p>While both Kotlin and Java are statically typed, they handle type
+coercion differently. Let’s look at a specific example.</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program comparing type coercion</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">sum</span><span class="op">(</span><span class="va">x</span><span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> <span class="va">y</span><span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> x <span class="op">+</span> y</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Attempting to call sum with an Int and a Double</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// val result = sum(1, 1.2)  // Does NOT compile in Kotlin!</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Error: Type mismatch: inferred type is Int but Double was expected</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// In Kotlin, you must explicitly convert</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">result</span> <span class="op">=</span> sum<span class="op">(</span><span class="fl">1.0</span><span class="op">,</span> <span class="fl">1.2</span><span class="op">)</span>  <span class="co">// Use 1.0 (Double literal)</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;sum(1.0, 1.2) = </span><span class="ss">$result</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Or use explicit conversion</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">x</span> <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">result2</span> <span class="op">=</span> sum<span class="op">(</span>x<span class="op">.</span>toDouble<span class="op">(),</span> <span class="fl">1.2</span><span class="op">)</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;sum(</span><span class="ss">$x</span><span class="st">.toDouble(), 1.2) = </span><span class="ss">$result2</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Kotlin does NOT automatically coerce Int to Double&quot;</span><span class="op">)</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;This prevents subtle bugs and makes conversions explicit&quot;</span><span class="op">)</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co">sum(1.0, 1.2) = 2.2</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co">sum(1.toDouble(), 1.2) = 2.2</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="co">Kotlin does NOT automatically coerce Int to Double</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="co">This prevents subtle bugs and makes conversions explicit</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<p><strong>Comparison with Java:</strong></p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode java"><code class="sourceCode java"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Java equivalent - this WOULD compile</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">public</span> <span class="kw">class</span> TypeCoercionExample <span class="op">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">double</span> <span class="fu">sum</span><span class="op">(</span><span class="dt">double</span> x<span class="op">,</span> <span class="dt">double</span> y<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> x <span class="op">+</span> y<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span><span class="op">(</span><span class="bu">String</span><span class="op">[]</span> args<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">double</span> result <span class="op">=</span> <span class="fu">sum</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="fl">1.2</span><span class="op">);</span>  <span class="co">// Java automatically converts Int to Double</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">System</span><span class="op">.</span><span class="fu">out</span><span class="op">.</span><span class="fu">println</span><span class="op">(</span><span class="st">&quot;sum(1, 1.2) = &quot;</span> <span class="op">+</span> result<span class="op">);</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>Key difference:</strong> Java automatically converts
+(coerces) the <code>int</code> value <code>1</code> to a
+<code>double</code>. Kotlin requires you to be explicit about such
+conversions, which makes your code’s intentions clearer and prevents
+accidental precision loss.</p>
+<h3 id="mutability-var-vs-val">Mutability: var vs val</h3>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program demonstrating var vs val</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// val - immutable (read-only) reference</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">immutableName</span> <span class="op">=</span> <span class="st">&quot;Andrew&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Original: </span><span class="ss">$immutableName</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// immutableName = &quot;Sarah&quot;  // Error: Val cannot be reassigned</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// var - mutable reference</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">var</span> <span class="va">mutableName</span> <span class="op">=</span> <span class="st">&quot;Andrew&quot;</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Original: </span><span class="ss">$mutableName</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    mutableName <span class="op">=</span> <span class="st">&quot;Sarah&quot;</span>  <span class="co">// This is allowed</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Changed: </span><span class="ss">$mutableName</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// However, the TYPE still cannot change</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// mutableName = 123  // Error: Type mismatch</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Key point: var allows reassignment, but not type changes&quot;</span><span class="op">)</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="co">Original: Andrew</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co">Original: Andrew</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="co">Changed: Sarah</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="co">Key point: var allows reassignment, but not type changes</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<hr />
+<h2 id="strong-vs-weak-typing">5. Strong vs Weak Typing</h2>
+<p><strong>Time: 8 minutes</strong></p>
+<h3 id="defining-strong-and-weak-typing">Defining Strong and Weak
+Typing</h3>
+<p>The terms “strong” and “weak” typing are less precisely defined than
+static/dynamic typing, but generally:</p>
+<p><strong>Strongly Typed Languages:</strong> - Type compatibility is
+strictly enforced - Minimal implicit type conversion - Explicit
+conversions required - As Liskov &amp; Zilles (1974) stated: “Whenever
+an object is passed from a calling function to a called function, its
+type must be compatible with the type declared in the called
+function”</p>
+<p><strong>Weakly Typed Languages:</strong> - More flexible with type
+conversions - Automatic type coercion in many situations - Can sometimes
+lead to unexpected behavior</p>
+<h3 id="the-spectrum">The Spectrum</h3>
+<p>It’s better to think of typing strength as a spectrum rather than a
+binary choice:</p>
+<pre><code>Weaker &lt;-----------------------------------------&gt; Stronger
+JavaScript    C    Java/Kotlin    Haskell/ML</code></pre>
+<h3 id="examples-of-type-flexibility">Examples of Type Flexibility</h3>
+<p>Let’s explore how different languages handle type mixing:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program demonstrating type strictness</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">intValue</span><span class="op">:</span> <span class="kw">Int</span> <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">doubleValue</span><span class="op">:</span> <span class="kw">Double</span> <span class="op">=</span> <span class="fl">5.5</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Kotlin does NOT allow this without explicit conversion</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// val result = intValue + doubleValue  // Error!</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// You must explicitly convert</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">result</span> <span class="op">=</span> intValue<span class="op">.</span>toDouble<span class="op">()</span> <span class="op">+</span> doubleValue</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="ss">$intValue</span><span class="st"> + </span><span class="ss">$doubleValue</span><span class="st"> = </span><span class="ss">$result</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Comparison with other operations</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">byteValue</span><span class="op">:</span> <span class="kw">Byte</span> <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">intValue2</span><span class="op">:</span> <span class="kw">Int</span> <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Even Byte and Int cannot be mixed without conversion</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// val sum = byteValue + intValue2  // Error!</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">sum</span> <span class="op">=</span> byteValue<span class="op">.</span>toInt<span class="op">()</span> <span class="op">+</span> intValue2</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Byte(</span><span class="ss">$byteValue</span><span class="st">) + Int(</span><span class="ss">$intValue2</span><span class="st">) = </span><span class="ss">$sum</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Kotlin&#39;s strict typing prevents accidental precision loss&quot;</span><span class="op">)</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;and makes all conversions explicit and visible&quot;</span><span class="op">)</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co">10 + 5.5 = 15.5</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">Byte(10) + Int(20) = 30</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">Kotlin&#39;s strict typing prevents accidental precision loss</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co">and makes all conversions explicit and visible</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<h3 id="implicit-conversions-in-practice">Implicit Conversions in
+Practice</h3>
+<p>Some languages allow more implicit conversions than others. Here’s
+how Kotlin handles numeric types:</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program exploring numeric type conversions</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">demonstrateNumericTypes</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Different numeric types</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">byteValue</span><span class="op">:</span> <span class="kw">Byte</span> <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">shortValue</span><span class="op">:</span> <span class="kw">Short</span> <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">intValue</span><span class="op">:</span> <span class="kw">Int</span> <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">longValue</span><span class="op">:</span> <span class="kw">Long</span> <span class="op">=</span> <span class="dv">4L</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">floatValue</span><span class="op">:</span> <span class="kw">Float</span> <span class="op">=</span> <span class="fl">5.0f</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">doubleValue</span><span class="op">:</span> <span class="kw">Double</span> <span class="op">=</span> <span class="fl">6.0</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Numeric Types in Kotlin:&quot;</span><span class="op">)</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Byte: </span><span class="ss">$byteValue</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Short: </span><span class="ss">$shortValue</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Int: </span><span class="ss">$intValue</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Long: </span><span class="ss">$longValue</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Float: </span><span class="ss">$floatValue</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Double: </span><span class="ss">$doubleValue</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// All conversions must be explicit</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">byteToInt</span><span class="op">:</span> <span class="kw">Int</span> <span class="op">=</span> byteValue<span class="op">.</span>toInt<span class="op">()</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">intToLong</span><span class="op">:</span> <span class="kw">Long</span> <span class="op">=</span> intValue<span class="op">.</span>toLong<span class="op">()</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">intToDouble</span><span class="op">:</span> <span class="kw">Double</span> <span class="op">=</span> intValue<span class="op">.</span>toDouble<span class="op">()</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Explicit Conversions:&quot;</span><span class="op">)</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Byte to Int: </span><span class="ss">$byteToInt</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Int to Long: </span><span class="ss">$intToLong</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Int to Double: </span><span class="ss">$intToDouble</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>    demonstrateNumericTypes<span class="op">()</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span> <span class="op">+</span> <span class="st">&quot;=&quot;</span><span class="op">.</span>repeat<span class="op">(</span><span class="dv">50</span><span class="op">))</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Key Insight: Kotlin requires explicit conversions&quot;</span><span class="op">)</span></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;This prevents bugs from unexpected type coercion&quot;</span><span class="op">)</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;=&quot;</span><span class="op">.</span>repeat<span class="op">(</span><span class="dv">50</span><span class="op">))</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a><span class="co">Numeric Types in Kotlin:</span></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="co">Byte: 1</span></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a><span class="co">Short: 2</span></span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a><span class="co">Int: 3</span></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a><span class="co">Long: 4</span></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a><span class="co">Float: 5.0</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a><span class="co">Double: 6.0</span></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a><span class="co">Explicit Conversions:</span></span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a><span class="co">Byte to Int: 1</span></span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a><span class="co">Int to Long: 3</span></span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a><span class="co">Int to Double: 3.0</span></span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a><span class="co">==================================================</span></span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a><span class="co">Key Insight: Kotlin requires explicit conversions</span></span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a><span class="co">This prevents bugs from unexpected type coercion</span></span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a><span class="co">==================================================</span></span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<h3 id="connection-to-static-typing">Connection to Static Typing</h3>
+<p><strong>Important observation:</strong> Strongly typed languages are
+more likely to be statically typed. Why? Because enforcing strict type
+compatibility is easier to do at compile time rather than runtime.</p>
+<hr />
+<h2 id="introduction-to-generics">6. Introduction to Generics</h2>
+<p><strong>Time: 10 minutes</strong></p>
+<h3 id="the-problem-generics-solve">The Problem Generics Solve</h3>
+<p>Imagine you’re building a program and you need several lists: - A
+list of strings (student names) - A list of integers (test scores) - A
+list of dates (assignment due dates)</p>
+<p>Without generics, you’d face a dilemma: 1. Create a separate list
+class for each type? (lots of duplicate code!) 2. Create one list that
+holds <code>Any</code> type? (lose type safety!)</p>
+<p><strong>Generics provide the solution:</strong> Write one list class
+that works with any type, while maintaining type safety.</p>
+<h3 id="type-safety-without-generics">Type Safety Without Generics</h3>
+<p>Let’s see what happens when we don’t constrain types in
+collections:</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program demonstrating the problem without proper generics</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Without type constraints, we can mix types</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Kotlin infers this as MutableList&lt;Any&gt;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">mixedList</span> <span class="op">=</span> mutableListOf<span class="op">(</span><span class="st">&quot;Apple&quot;</span><span class="op">,</span> <span class="st">&quot;Banana&quot;</span><span class="op">,</span> <span class="dv">7</span><span class="op">)</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Mixed list: </span><span class="ss">$mixedList</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Inferred type: MutableList&lt;Any&gt;&quot;</span><span class="op">)</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Now when we iterate, we only have access to Any methods</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>item <span class="kw">in</span> mixedList<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">// We can&#39;t call .uppercase() because item is of type Any</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        <span class="co">// println(item.uppercase())  // Error!</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        <span class="co">// We only have access to methods from Any</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Item: </span><span class="ss">$item</span><span class="st"> (toString from Any)&quot;</span><span class="op">)</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// To use String methods, we need to check and cast</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">With type checking and casting:&quot;</span><span class="op">)</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>item <span class="kw">in</span> mixedList<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="op">(</span>item <span class="kw">is</span> <span class="kw">String</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;String: </span><span class="ss">${</span>item<span class="op">.</span>uppercase<span class="op">()</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>            println<span class="op">(</span><span class="st">&quot;Not a string: </span><span class="ss">$item</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Problem: We lose type safety and need runtime checks!&quot;</span><span class="op">)</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a><span class="co">Mixed list: [Apple, Banana, 7]</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a><span class="co">Inferred type: MutableList&lt;Any&gt;</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a><span class="co">Item: Apple (toString from Any)</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="co">Item: Banana (toString from Any)</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="co">Item: 7 (toString from Any)</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a><span class="co">With type checking and casting:</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a><span class="co">String: APPLE</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a><span class="co">String: BANANA</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a><span class="co">Not a string: 7</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a><span class="co">Problem: We lose type safety and need runtime checks!</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<p><strong>This is similar to Python’s behavior</strong> (shown in the
+slides), where type errors only appear at runtime.</p>
+<h3 id="the-generic-solution">The Generic Solution</h3>
+<p>With generics, we can specify what type of elements a collection
+should hold:</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program demonstrating type-safe generics</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Create a list that can ONLY hold Strings</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">stringList</span><span class="op">:</span> MutableList<span class="op">&lt;</span><span class="kw">String</span><span class="op">&gt;</span> <span class="op">=</span> mutableListOf<span class="op">(</span><span class="st">&quot;Apple&quot;</span><span class="op">,</span> <span class="st">&quot;Banana&quot;</span><span class="op">,</span> <span class="st">&quot;Carrot&quot;</span><span class="op">)</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;String list: </span><span class="ss">$stringList</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Now we can safely use String methods</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>item <span class="kw">in</span> stringList<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Uppercase: </span><span class="ss">${</span>item<span class="op">.</span>uppercase<span class="op">()</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Trying to add a non-String will cause a COMPILE error</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// stringList.add(7)  // Error: Type mismatch!</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">With generics, type errors are caught at compile time!&quot;</span><span class="op">)</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Create a list that can ONLY hold Integers</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">intList</span><span class="op">:</span> MutableList<span class="op">&lt;</span><span class="kw">Int</span><span class="op">&gt;</span> <span class="op">=</span> mutableListOf<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">)</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Integer list: </span><span class="ss">$intList</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>item <span class="kw">in</span> intList<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;Double: </span><span class="ss">${</span>item <span class="op">*</span> <span class="dv">2</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Again, mixing types causes a compile error</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    <span class="co">// intList.add(&quot;four&quot;)  // Error: Type mismatch!</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Generics maintain type safety while providing flexibility!&quot;</span><span class="op">)</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="co">String list: [Apple, Banana, Carrot]</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="co">Uppercase: APPLE</span></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="co">Uppercase: BANANA</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="co">Uppercase: CARROT</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a><span class="co">With generics, type errors are caught at compile time!</span></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a><span class="co">Integer list: [1, 2, 3]</span></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="co">Double: 2</span></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="co">Double: 4</span></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a><span class="co">Double: 6</span></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="co">Generics maintain type safety while providing flexibility!</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<h3 id="key-terminology">Key Terminology</h3>
+<p>Let’s clarify some important terms:</p>
+<p><strong>Generic Type:</strong> A class or interface that has type
+parameters - Example: <code>List</code>, <code>MutableList</code>,
+<code>Set</code></p>
+<p><strong>Type Parameter:</strong> The placeholder in angular brackets
+<code>&lt;T&gt;</code> - In <code>List&lt;T&gt;</code>, the
+<code>T</code> is the type parameter</p>
+<p><strong>Parameterized Type:</strong> A generic type with a specific
+type argument - Example: <code>List&lt;String&gt;</code> is a
+parameterized type - Example: <code>MutableList&lt;Int&gt;</code> is a
+parameterized type</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program demonstrating generic terminology</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// MutableList is the GENERIC TYPE</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// String is the TYPE ARGUMENT</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// MutableList&lt;String&gt; is the PARAMETERIZED TYPE</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">fruits</span><span class="op">:</span> MutableList<span class="op">&lt;</span><span class="kw">String</span><span class="op">&gt;</span> <span class="op">=</span> mutableListOf<span class="op">(</span><span class="st">&quot;Apple&quot;</span><span class="op">,</span> <span class="st">&quot;Banana&quot;</span><span class="op">)</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Fruits (MutableList&lt;String&gt;): </span><span class="ss">$fruits</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">numbers</span><span class="op">:</span> MutableList<span class="op">&lt;</span><span class="kw">Int</span><span class="op">&gt;</span> <span class="op">=</span> mutableListOf<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">)</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Numbers (MutableList&lt;Int&gt;): </span><span class="ss">$numbers</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">grades</span><span class="op">:</span> MutableList<span class="op">&lt;</span><span class="kw">Double</span><span class="op">&gt;</span> <span class="op">=</span> mutableListOf<span class="op">(</span><span class="fl">85.5</span><span class="op">,</span> <span class="fl">92.0</span><span class="op">,</span> <span class="fl">78.5</span><span class="op">)</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Grades (MutableList&lt;Double&gt;): </span><span class="ss">$grades</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">All three use the same generic type (MutableList)&quot;</span><span class="op">)</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;but with different type parameters&quot;</span><span class="op">)</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co">Fruits (MutableList&lt;String&gt;): [Apple, Banana]</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co">Numbers (MutableList&lt;Int&gt;): [1, 2, 3]</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co">Grades (MutableList&lt;Double&gt;): [85.5, 92.0, 78.5]</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co">All three use the same generic type (MutableList)</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co">but with different type parameters</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<hr />
+<h2 id="working-with-generic-types-in-kotlin">7. Working with Generic
+Types in Kotlin</h2>
+<p><strong>Time: 5 minutes</strong></p>
+<h3 id="type-inference-with-generics">Type Inference with Generics</h3>
+<p>Just like with regular variables, Kotlin can infer generic type
+parameters:</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program demonstrating generic type inference</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Explicit type parameter</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">explicitList</span><span class="op">:</span> MutableList<span class="op">&lt;</span><span class="kw">String</span><span class="op">&gt;</span> <span class="op">=</span> mutableListOf<span class="op">(</span><span class="st">&quot;Apple&quot;</span><span class="op">,</span> <span class="st">&quot;Banana&quot;</span><span class="op">)</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Type inference - Kotlin infers MutableList&lt;String&gt;</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">inferredList</span> <span class="op">=</span> mutableListOf<span class="op">(</span><span class="st">&quot;Apple&quot;</span><span class="op">,</span> <span class="st">&quot;Banana&quot;</span><span class="op">)</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Explicit list: </span><span class="ss">$explicitList</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Inferred list: </span><span class="ss">$inferredList</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Both have the same type restrictions</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    explicitList<span class="op">.</span>add<span class="op">(</span><span class="st">&quot;Carrot&quot;</span><span class="op">)</span>  <span class="co">// OK</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    inferredList<span class="op">.</span>add<span class="op">(</span><span class="st">&quot;Date&quot;</span><span class="op">)</span>    <span class="co">// OK</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">// explicitList.add(7)  // Error!</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// inferredList.add(7)  // Also an error!</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">After adding items:&quot;</span><span class="op">)</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Explicit list: </span><span class="ss">$explicitList</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Inferred list: </span><span class="ss">$inferredList</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Type inference with multiple types</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">numbers</span> <span class="op">=</span> mutableListOf<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">)</span>  <span class="co">// Inferred as MutableList&lt;Int&gt;</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">decimals</span> <span class="op">=</span> mutableListOf<span class="op">(</span><span class="fl">1.5</span><span class="op">,</span> <span class="fl">2.5</span><span class="op">)</span>  <span class="co">// Inferred as MutableList&lt;Double&gt;</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Numbers (Int): </span><span class="ss">$numbers</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Decimals (Double): </span><span class="ss">$decimals</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a><span class="co">Explicit list: [Apple, Banana]</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a><span class="co">Inferred list: [Apple, Banana]</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a><span class="co">After adding items:</span></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co">Explicit list: [Apple, Banana, Carrot]</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a><span class="co">Inferred list: [Apple, Banana, Date]</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a><span class="co">Numbers (Int): [1, 2, 3]</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a><span class="co">Decimals (Double): [1.5, 2.5]</span></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<h3 id="the-return-type-of-generic-methods">The Return Type of Generic
+Methods</h3>
+<p>Generic types have methods that also use the type parameter. Let’s
+explore this:</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program demonstrating generic method return types</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Create a list of strings</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">stringList</span><span class="op">:</span> List<span class="op">&lt;</span><span class="kw">String</span><span class="op">&gt;</span> <span class="op">=</span> listOf<span class="op">(</span><span class="st">&quot;apple&quot;</span><span class="op">,</span> <span class="st">&quot;banana&quot;</span><span class="op">,</span> <span class="st">&quot;carrot&quot;</span><span class="op">)</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// The last() method returns the same type as the list parameter</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">lastString</span><span class="op">:</span> <span class="kw">String</span> <span class="op">=</span> stringList<span class="op">.</span>last<span class="op">()</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Last string: </span><span class="ss">$lastString</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Create a list of integers</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">intList</span><span class="op">:</span> List<span class="op">&lt;</span><span class="kw">Int</span><span class="op">&gt;</span> <span class="op">=</span> listOf<span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">)</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// The last() method returns Int for List&lt;Int&gt;</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">lastInt</span><span class="op">:</span> <span class="kw">Int</span> <span class="op">=</span> intList<span class="op">.</span>last<span class="op">()</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Last integer: </span><span class="ss">$lastInt</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This works because List&lt;T&gt;.last() returns T</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">// When T = String, last() returns String</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// When T = Int, last() returns Int</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">The return type of generic methods&quot;</span><span class="op">)</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;depends on the type parameter!&quot;</span><span class="op">)</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// More examples</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">firstString</span> <span class="op">=</span> stringList<span class="op">.</span>first<span class="op">()</span>  <span class="co">// Returns String</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">firstInt</span> <span class="op">=</span> intList<span class="op">.</span>first<span class="op">()</span>  <span class="co">// Returns Int</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">First string: </span><span class="ss">$firstString</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;First integer: </span><span class="ss">$firstInt</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Demonstrating type safety</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">uppercased</span> <span class="op">=</span> lastString<span class="op">.</span>uppercase<span class="op">()</span>  <span class="co">// String methods available</span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">doubled</span> <span class="op">=</span> lastInt <span class="op">*</span> <span class="dv">2</span>  <span class="co">// Int operations available</span></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">String method: </span><span class="ss">${</span>lastString<span class="op">.</span>uppercase<span class="op">()</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Int operation: </span><span class="ss">$lastInt</span><span class="st"> * 2 = </span><span class="ss">$doubled</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a><span class="co">Last string: carrot</span></span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a><span class="co">Last integer: 3</span></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a><span class="co">The return type of generic methods</span></span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a><span class="co">depends on the type parameter!</span></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a><span class="co">First string: apple</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a><span class="co">First integer: 1</span></span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a><span class="co">String method: CARROT</span></span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a><span class="co">Int operation: 3 * 2 = 6</span></span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<h3 id="real-world-example-type-safe-collections">Real-World Example:
+Type-Safe Collections</h3>
+<p>Let’s see a practical example of how generics help us write safer
+code:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode kotlin"><code class="sourceCode kotlin"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Complete Kotlin program: Student grade management system</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Data class to represent a student</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="kw">class</span> Student<span class="op">(</span><span class="kw">val</span> <span class="va">name</span><span class="op">:</span> <span class="dt">String</span><span class="op">,</span> <span class="kw">val</span> <span class="va">id</span><span class="op">:</span> <span class="dt">Int</span><span class="op">)</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> calculateAverage<span class="op">(</span><span class="va">grades</span><span class="op">:</span> <span class="dt">List</span>&lt;<span class="va">Double</span>&gt;<span class="op">):</span> <span class="dt">Double</span> <span class="op">{</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Calculate the average of a list of grades</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> grades<span class="op">.</span>sum<span class="op">()</span> <span class="op">/</span> grades<span class="op">.</span>size</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">findTopStudent</span><span class="op">(</span><span class="va">students</span><span class="op">:</span> <span class="dt">List</span>&lt;<span class="va">Student</span>&gt;<span class="op">,</span> <span class="va">grades</span><span class="op">:</span> <span class="dt">List</span>&lt;<span class="va">Double</span>&gt;<span class="op">):</span> <span class="dt">Student</span> <span class="op">{</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Find the student with the highest grade</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">maxGradeIndex</span> <span class="op">=</span> grades<span class="op">.</span>indexOf<span class="op">(</span>grades<span class="op">.</span>maxOrNull<span class="op">())</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">return</span> students<span class="op">[</span>maxGradeIndex<span class="op">]</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="kw">fun</span> <span class="fu">main</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Type-safe list of students</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">students</span><span class="op">:</span> List<span class="op">&lt;</span>Student<span class="op">&gt;</span> <span class="op">=</span> listOf<span class="op">(</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>        Student<span class="op">(</span><span class="st">&quot;Alice&quot;</span><span class="op">,</span> <span class="dv">101</span><span class="op">),</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>        Student<span class="op">(</span><span class="st">&quot;Bob&quot;</span><span class="op">,</span> <span class="dv">102</span><span class="op">),</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>        Student<span class="op">(</span><span class="st">&quot;Charlie&quot;</span><span class="op">,</span> <span class="dv">103</span><span class="op">)</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    <span class="op">)</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Type-safe list of grades</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">grades</span><span class="op">:</span> List<span class="op">&lt;</span><span class="kw">Double</span><span class="op">&gt;</span> <span class="op">=</span> listOf<span class="op">(</span><span class="fl">85.5</span><span class="op">,</span> <span class="fl">92.0</span><span class="op">,</span> <span class="fl">78.5</span><span class="op">)</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Students and Grades:&quot;</span><span class="op">)</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span>i <span class="kw">in</span> students<span class="op">.</span>indices<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>        println<span class="op">(</span><span class="st">&quot;</span><span class="ss">${</span>students<span class="op">[</span>i<span class="op">].</span>name<span class="ss">}</span><span class="st"> (ID: </span><span class="ss">${</span>students<span class="op">[</span>i<span class="op">].</span>id<span class="ss">}</span><span class="st">): </span><span class="ss">${</span>grades<span class="op">[</span>i<span class="op">]</span><span class="ss">}</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Calculate average</span></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">average</span> <span class="op">=</span> calculateAverage<span class="op">(</span>grades<span class="op">)</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Class average: %.2f&quot;</span><span class="op">.</span>format<span class="op">(</span>average<span class="op">))</span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Find top student</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">topStudent</span> <span class="op">=</span> findTopStudent<span class="op">(</span>students<span class="op">,</span> grades<span class="op">)</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">val</span> <span class="va">topGrade</span> <span class="op">=</span> grades<span class="op">.</span>maxOrNull<span class="op">()</span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;Top student: </span><span class="ss">${</span>topStudent<span class="op">.</span>name<span class="ss">}</span><span class="st"> with grade </span><span class="ss">$topGrade</span><span class="st">&quot;</span><span class="op">)</span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>    <span class="co">// The compiler ensures type safety:</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>    <span class="co">// students.add(92.0)  // Error! Can&#39;t add Double to List&lt;Student&gt;</span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>    <span class="co">// grades.add(Student(&quot;Dave&quot;, 104))  // Error! Can&#39;t add Student to List&lt;Double&gt;</span></span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>    println<span class="op">(</span><span class="st">&quot;</span><span class="sc">\n</span><span class="st">Generics ensure we can&#39;t accidentally mix up students and grades!&quot;</span><span class="op">)</span></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a><span class="co">Output:</span></span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a><span class="co">Students and Grades:</span></span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a><span class="co">Alice (ID: 101): 85.5</span></span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a><span class="co">Bob (ID: 102): 92.0</span></span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a><span class="co">Charlie (ID: 103): 78.5</span></span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a><span class="co">Class average: 85.33</span></span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a><span class="co">Top student: Bob with grade 92.0</span></span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a><span class="co">Generics ensure we can&#39;t accidentally mix up students and grades!</span></span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a><span class="co">*/</span></span></code></pre></div>
+<hr />
+<h2 id="summary">Summary</h2>
+<h3 id="key-concepts-covered">Key Concepts Covered</h3>
+<table>
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Key Points</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Type Safety</strong></td>
+<td>How well a language prevents type errors; statically typed languages
+catch errors at compile time</td>
+</tr>
+<tr>
+<td><strong>Static Typing</strong></td>
+<td>Types are checked before runtime (Kotlin, Java); provides early
+error detection and better tooling</td>
+</tr>
+<tr>
+<td><strong>Dynamic Typing</strong></td>
+<td>Types are checked at runtime (JavaScript, Python); provides
+flexibility but can hide bugs</td>
+</tr>
+<tr>
+<td><strong>Strong Typing</strong></td>
+<td>Minimal implicit type conversion; explicit conversions required
+(Kotlin is strongly typed)</td>
+</tr>
+<tr>
+<td><strong>Weak Typing</strong></td>
+<td>More automatic type coercion; can lead to unexpected behavior</td>
+</tr>
+<tr>
+<td><strong>Generics</strong></td>
+<td>Allow writing flexible, reusable code while maintaining type
+safety</td>
+</tr>
+<tr>
+<td><strong>Type Parameters</strong></td>
+<td>Placeholders (like <code>&lt;T&gt;</code>) that make generic types
+work with specific types</td>
+</tr>
+<tr>
+<td><strong>Type Inference</strong></td>
+<td>Kotlin can deduce types automatically, reducing verbosity while
+keeping type safety</td>
+</tr>
+</tbody>
+</table>
+<h3 id="learning-outcomes-achieved">Learning Outcomes Achieved</h3>
+<p>✅ You can now explain the difference between static and dynamic
+typing<br />
+✅ You understand what type safety means and why Kotlin enforces
+it<br />
+✅ You can compare Kotlin’s type system with JavaScript and Java<br />
+✅ You grasp the distinction between strong and weak typing<br />
+✅ You know how to use generics to create type-safe collections<br />
+✅ You understand how generic type parameters work</p>
+<h3 id="looking-ahead">Looking Ahead</h3>
+<p>The concepts we’ve covered today form the foundation for
+understanding: - More advanced generic features (variance, constraints)
+- Collection operations and functional programming - Building your own
+generic classes and functions</p>
+<p>Remember: Kotlin’s type system is designed to catch errors early
+while maintaining code clarity. Embrace the type safety - it’s there to
+help you write better, more reliable code!</p>
+<hr />
+<p><strong>End of Lecture</strong></p>
