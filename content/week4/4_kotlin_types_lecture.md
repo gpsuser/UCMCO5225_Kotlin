@@ -5,16 +5,14 @@
 
 ## Table of Contents
 
-| Section | Topic | Time |
-|---------|-------|------|
-| 1 | [Learning Outcomes](#learning-outcomes) | 2 min |
-| 2 | [Introduction to Type Systems](#1-introduction-to-type-systems) | 5 min |
-| 3 | [Type Safety](#2-type-safety) | 5 min |
-| 4 | [Static vs Dynamic Typing](#3-static-vs-dynamic-typing) | 10 min |
-| 5 | [Kotlin's Type System Features](#4-kotlins-type-system-features) | 10 min |
-| 6 | [Strong vs Weak Typing](#5-strong-vs-weak-typing) | 8 min |
-| 7 | [Introduction to Generics](#6-introduction-to-generics) | 10 min |
-| 8 | [Working with Generic Types in Kotlin](#7-working-with-generic-types-in-kotlin) | 5 min |
+1. [Introduction to Type Systems](#1-introduction-to-type-systems)
+2. [Type Safety](#2-type-safety)
+3. [Static vs Dynamic Typing](#3-static-vs-dynamic-typing)
+4. [Kotlin's Type System Features](#4-kotlins-type-system-features)
+5. [Strong vs Weak Typing](#5-strong-vs-weak-typing)
+6. [Introduction to Generics](#6-introduction-to-generics)
+7. [Working with Generic Types in Kotlin](#7-working-with-generic-types-in-kotlin)
+8. [Summary](#summary)
 
 ---
 
@@ -32,8 +30,6 @@ By the end of this lecture, you will be able to:
 ---
 
 ## 1. Introduction to Type Systems
-
-**Time: 5 minutes**
 
 Every programming language has a **type system** - a set of rules that defines how the language categorizes and manages different kinds of data. Understanding type systems is crucial because they affect how you write code, when errors are caught, and how flexible your programs can be.
 
@@ -59,8 +55,6 @@ This distinction has profound implications for how you develop software, debug e
 ---
 
 ## 2. Type Safety
-
-**Time: 5 minutes**
 
 ### What is Type Safety?
 
@@ -92,8 +86,6 @@ Different languages make different choices about where to sit on this spectrum.
 ---
 
 ## 3. Static vs Dynamic Typing
-
-**Time: 10 minutes**
 
 ### Statically Typed Languages
 
@@ -230,8 +222,6 @@ sum(1, 2.3) = 3.3
 ---
 
 ## 4. Kotlin's Type System Features
-
-**Time: 10 minutes**
 
 ### Type Inference
 
@@ -376,8 +366,6 @@ Key point: var allows reassignment, but not type changes
 
 ## 5. Strong vs Weak Typing
 
-**Time: 8 minutes**
-
 ### Defining Strong and Weak Typing
 
 The terms "strong" and "weak" typing are less precisely defined than static/dynamic typing, but generally:
@@ -517,8 +505,6 @@ This prevents bugs from unexpected type coercion
 ---
 
 ## 6. Introduction to Generics
-
-**Time: 10 minutes**
 
 ### The Problem Generics Solve
 
@@ -694,8 +680,6 @@ but with different type parameters
 ---
 
 ## 7. Working with Generic Types in Kotlin
-
-**Time: 5 minutes**
 
 ### Type Inference with Generics
 
@@ -907,7 +891,7 @@ The concepts we've covered today form the foundation for understanding:
 - Collection operations and functional programming
 - Building your own generic classes and functions
 
-Remember: Kotlin's type system is designed to catch errors early while maintaining code clarity. Embrace the type safety - it's there to help you write better, more reliable code!
+Remember: Kotlin's type system is designed to catch errors early while maintaining code clarity. Embrace the type safety - it's there to help you write better, more reliable code.
 
 ---
 
